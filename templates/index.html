@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Logistics - VRP Solver</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>Quantum Logistics</h1>
+                        <p class="tagline">Next-Generation Route Optimization</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- PASSO A: ESCOPO DO CÁLCULO -->
+                <div class="section">
+                    <h3>Step 1: Route Scope</h3>
+
+                    <div class="form-group">
+                        <label for="route-type">Calculation Type</label>
+                        <select id="route-type" class="form-control">
+                            <option value="inter-city">Between Cities (Inter-municipal)</option>
+                            <option value="intra-city">Within City (Intra-municipal)</option>
+                        </select>
+                        <small id="route-type-info" class="info-text">
+                            Choose between city-to-city or within a single city
+                        </small>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- PASSO B: CONFIGURAÇÃO (aparece apenas para Intra-City) -->
+                <div id="intra-city-config" class="section" style="display: none;">
+                    <h3>Step 2: Configuration</h3>
+
+                    <div class="form-group">
+                        <label for="city-selection">Select City</label>
+                        <select id="city-selection" class="form-control">
+                            <option value="brasilia">Brasília (DF)</option>
+                            <option value="sao_paulo" selected>São Paulo (SP)</option>
+                            <option value="rio_de_janeiro">Rio de Janeiro (RJ)</option>
+                            <option value="belo_horizonte">Belo Horizonte (MG)</option>
+                            <option value="salvador">Salvador (BA)</option>
+                            <option value="recife">Recife (PE)</option>
+                            <option value="fortaleza">Fortaleza (CE)</option>
+                            <option value="curitiba">Curitiba (PR)</option>
+                            <option value="porto_alegre">Porto Alegre (RS)</option>
+                            <option value="manaus">Manaus (AM)</option>
+                        </select>
+                        <small class="info-text">City for intra-city routing</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="algorithm">Algorithm Type</label>
+                        <select id="algorithm" class="form-control">
+                            <option value="classical">Classical (Heuristic)</option>
+                            <option value="quantum">Quantum (Simulation)</option>
+                        </select>
+                        <small id="algorithm-info" class="info-text">
+                            Classical: 1-9 points | Quantum: 1-3 points (RAM limit)
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="num-delivery-points">Delivery Points Quantity</label>
+                        <select id="num-delivery-points" class="form-control">
+                            <option value="1">1 point</option>
+                            <option value="2">2 points</option>
+                            <option value="3" selected>3 points</option>
+                            <option value="4">4 points</option>
+                            <option value="5">5 points</option>
+                            <option value="6">6 points</option>
+                            <option value="7">7 points</option>
+                            <option value="8">8 points</option>
+                            <option value="9">9 points</option>
+                        </select>
+                        <small id="points-info" class="info-text">
+                            Random neighborhoods (excluding hub)
+                        </small>
+                    </div>
+
+                    <button id="generate-intra-city-route" class="btn btn-secondary">
+                        <i class="fas fa-random"></i> Generate Intra-City Route
+                    </button>
+                </div>
+
+                <!-- CONFIGURAÇÃO INTER-CITY (modo antigo mantido) -->
+                <div id="inter-city-config" class="section">
+                    <h3>Step 2: Configuration</h3>
+
+                    <div class="form-group">
+                        <label for="algorithm-inter">Algorithm Type</label>
+                        <select id="algorithm-inter" class="form-control">
+                            <option value="classical">Classical (Heuristic)</option>
+                            <option value="quantum">Quantum (Simulation)</option>
+                        </select>
+                        <small id="algorithm-inter-info" class="info-text">
+                            Classical: unlimited | Quantum: max 4 points (RAM limit)
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="depot-capital">Depot City</label>
+                        <select id="depot-capital" class="form-control">
+                            <option value="0">Brasília (DF)</option>
+                            <option value="1" selected>São Paulo (SP)</option>
+                            <option value="2">Rio de Janeiro (RJ)</option>
+                            <option value="3">Belo Horizonte (MG)</option>
+                            <option value="4">Salvador (BA)</option>
+                            <option value="5">Recife (PE)</option>
+                            <option value="6">Fortaleza (CE)</option>
+                            <option value="7">Curitiba (PR)</option>
+                            <option value="8">Porto Alegre (RS)</option>
+                            <option value="9">Manaus (AM)</option>
+                        </select>
+                        <small class="info-text">Starting capital</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="num-additional-points">Additional Cities</label>
+                        <select id="num-additional-points" class="form-control">
+                            <option value="1">1 city</option>
+                            <option value="2">2 cities</option>
+                            <option value="3" selected>3 cities</option>
+                            <option value="4">4 cities</option>
+                            <option value="5">5 cities</option>
+                            <option value="6">6 cities</option>
+                            <option value="7">7 cities</option>
+                            <option value="8">8 cities</option>
+                            <option value="9">9 cities (all others)</option>
+                        </select>
+                        <small id="num-additional-info" class="info-text">Random cities from other capitals</small>
+                    </div>
+
+                    <button id="load-brazil-capitals" class="btn btn-secondary">
+                        <i class="fas fa-globe-americas"></i> Load Inter-City Route
+                    </button>
+
+                    <button id="clear-points" class="btn btn-danger" style="display: none;">
+                        <i class="fas fa-trash"></i> Clear All Points
+                    </button>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- REAL ROADS SECTION -->
+                <div class="section">
+                    <h3>Route Options</h3>
+
+                    <div class="form-group">
+                        <label class="checkbox-container" for="use-real-roads">
+                            <input type="checkbox" id="use-real-roads">
+                            <span class="checkbox-label">
+                                <i class="fas fa-road"></i> Use Real Roads
+                            </span>
+                        </label>
+                        <small class="info-text">
+                            Calculate routes using real streets and highways
+                        </small>
+                        <div id="real-roads-status" class="status-indicator status-disconnected">
+                            <i class="fas fa-times-circle"></i> API Not Configured
+                        </div>
+                    </div>
+
+                    <!-- API Key Configuration (shown when not configured) -->
+                    <div id="api-key-section" class="api-key-section">
+                        <label for="api-key-input">OpenRouteService API Key</label>
+                        <div class="api-key-input-group">
+                            <input type="password" id="api-key-input" class="form-control" placeholder="Enter your API key">
+                            <button id="set-api-key-btn" class="btn btn-small">
+                                <i class="fas fa-key"></i>
+                            </button>
+                        </div>
+                        <small class="info-text">
+                            Get free API key at <a href="https://openrouteservice.org" target="_blank">openrouteservice.org</a>
+                        </small>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section">
+                    <h3>Calculate</h3>
+                    <div id="validation-message" class="validation-message"></div>
+                    <button id="calculate-route" class="btn btn-primary" disabled>
+                        <i class="fas fa-route"></i> Calculate Optimized Route
+                    </button>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section">
+                    <h3>Points Added</h3>
+                    <div id="points-list" class="points-list">
+                        <p class="empty-state">No points added yet</p>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Total Points:</span>
+                        <span id="total-points" class="metric-value">0</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Map Area -->
+            <main class="map-container">
+                <div id="map"></div>
+                <div class="map-info">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Tip: Load test data (São Paulo or Brazil Capitals)</span>
+                </div>
+            </main>
+
+            <!-- Results Panel -->
+            <aside class="results-panel">
+                <h3>Results</h3>
+                <div id="results-content" class="results-content">
+                    <p class="empty-state">Calculate a route to see results</p>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fas fa-project-diagram"></i> Quantum Logistics</h4>
+                    <p class="footer-description">
+                        Advanced routing optimization platform combining quantum computing and classical algorithms
+                        for efficient logistics planning across Brazilian capitals.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h4><i class="fas fa-info-circle"></i> About</h4>
+                    <p class="footer-info">
+                        This platform demonstrates the power of quantum computing applied to real-world
+                        logistics problems, solving the Traveling Salesman Problem (TSP) using both
+                        quantum simulation and classical heuristics.
+                    </p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 Quantum Logistics Platform</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Calculating optimized route...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
