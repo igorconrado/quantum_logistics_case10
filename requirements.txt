@@ -1,0 +1,25 @@
+# Web Framework
+flask>=3.0.0
+flask-cors>=4.0.0
+
+# Computação Quântica
+qiskit>=0.45.0
+qiskit-aer>=0.13.0
+qiskit-algorithms>=0.3.0
+qiskit-optimization>=0.6.0
+
+# Algoritmos Clássicos e Grafos
+networkx>=3.1
+
+# Processamento Numérico
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Visualização
+matplotlib>=3.7.0
+
+# Real Roads Routing (OpenRouteService)
+requests>=2.31.0
+
+# Environment Variables (optional)
+python-dotenv>=1.0.0
