@@ -51,6 +51,10 @@ Based on **Case 10 from KPMG/TDC Net's Danish Quantum Case Collection**, this pr
 ![Inter-City Real Roads](snapshots/04_intercity_real_roads.png)
 *Route optimization between Brazilian capitals using actual road network*
 
+### Intra-City Real Roads Calculation
+![Real Roads Calculation](snapshots/07_real_roads_calculation.png)
+*Route within São Paulo using real streets and highways via OpenRouteService API*
+
 ### Quantum Route Calculation
 ![Quantum Route](snapshots/06_quantum_route.png)
 *Intra-city route calculated using quantum simulation (QUBO/QAOA)*
