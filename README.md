@@ -41,6 +41,22 @@ Based on **Case 10 from KPMG/TDC Net's Danish Quantum Case Collection**, this pr
 
 ---
 
+## Screenshots
+
+### Application Interface
+![Initial State](snapshots/01_initial_state.png)
+*Main interface with interactive map and control panels*
+
+### Inter-City Route with Real Roads
+![Inter-City Real Roads](snapshots/04_intercity_real_roads.png)
+*Route optimization between Brazilian capitals using actual road network*
+
+### Quantum Route Calculation
+![Quantum Route](snapshots/06_quantum_route.png)
+*Intra-city route calculated using quantum simulation (QUBO/QAOA)*
+
+---
+
 ## Key Features
 
 - **Interactive Map Interface**: Visualize delivery points and optimized routes on an interactive map
@@ -361,7 +377,7 @@ pytest test_*.py -v
 
 ### Author
 **Igor Conrado**
-Email: [conradoigor7778@gmail.com](mailto:conradoigor7778@gmail.com)
+Email: [conradoigor78@gmail.com](mailto:conradoigor78@gmail.com)
 LinkedIn: [linkedin.com/in/igorconrado](https://www.linkedin.com/in/igorconrado/)
 GitHub: [github.com/igorconrado](https://github.com/igorconrado)
 
