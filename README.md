@@ -43,21 +43,21 @@ Based on **Case 10 from KPMG/TDC Net's Danish Quantum Case Collection**, this pr
 
 ## Screenshots
 
-### Interface Principal
+### Main Interface
 ![Initial State](snapshots/01_initial_state.png)
-*Tela inicial com mapa interativo e painéis de configuração*
+*Initial screen with interactive map and configuration panels*
 
-### Rota Inter-City com Real Roads (5 Capitais)
+### Inter-City Route with Real Roads (5 Capitals)
 ![Inter-City Real Roads](snapshots/04_intercity_real_roads.png)
-*Otimização de rota entre capitais brasileiras usando rede rodoviária real (8.062 km)*
+*Route optimization between Brazilian capitals using real road network (8,062 km)*
 
-### Rota Intra-City com Real Roads (São Paulo)
+### Intra-City Route with Real Roads (São Paulo)
 ![Real Roads Calculation](snapshots/07_real_roads_calculation.png)
-*Rota dentro de São Paulo usando ruas e rodovias reais via OpenRouteService API (34.99 km)*
+*Route within São Paulo using real streets and highways via OpenRouteService API (34.99 km)*
 
-### Rota Intra-City com Algoritmo Quântico
+### Intra-City Route with Quantum Algorithm
 ![Quantum Route](snapshots/06_quantum_route.png)
-*Rota calculada com simulação quântica QUBO - linha tracejada indica distância Haversine (46.57 km)*
+*Route calculated with QUBO quantum simulation - dashed line indicates Haversine distance (46.57 km)*
 
 ---
 
