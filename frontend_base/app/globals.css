@@ -1,0 +1,275 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'leaflet/dist/leaflet.css';
+
+@custom-variant dark (&:is(.dark *));
+
+/* Quantum Logistics - Futuristic Control Center Theme */
+:root {
+  --background: #0a0a0f;
+  --foreground: #f0f4f8;
+  --card: #12121a;
+  --card-foreground: #f0f4f8;
+  --popover: #16161f;
+  --popover-foreground: #f0f4f8;
+  --primary: #ff6b35;
+  --primary-foreground: #ffffff;
+  --secondary: #1a1a24;
+  --secondary-foreground: #f0f4f8;
+  --muted: #1e1e2a;
+  --muted-foreground: #8b8fa3;
+  --accent: #00e5cc;
+  --accent-foreground: #0a0a0f;
+  --destructive: #ff4757;
+  --destructive-foreground: #ffffff;
+  --border: #2a2a3a;
+  --input: #1a1a24;
+  --ring: #ff6b35;
+  --chart-1: #ff6b35;
+  --chart-2: #00e5cc;
+  --chart-3: #6366f1;
+  --chart-4: #22c55e;
+  --chart-5: #f59e0b;
+  --radius: 0.75rem;
+  --sidebar: #0f0f14;
+  --sidebar-foreground: #f0f4f8;
+  --sidebar-primary: #ff6b35;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1a1a24;
+  --sidebar-accent-foreground: #f0f4f8;
+  --sidebar-border: #2a2a3a;
+  --sidebar-ring: #ff6b35;
+  
+  /* Custom Quantum theme colors */
+  --quantum: #6366f1;
+  --quantum-light: #818cf8;
+  --quantum-glow: rgba(99, 102, 241, 0.4);
+  --neon: #00e5cc;
+  --neon-light: #5eead4;
+  --neon-glow: rgba(0, 229, 204, 0.35);
+  --coral: #ff6b35;
+  --coral-light: #ff8f66;
+  --coral-glow: rgba(255, 107, 53, 0.35);
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ff4757;
+  
+  /* Gradient stops */
+  --gradient-start: #ff6b35;
+  --gradient-mid: #ff8f66;
+  --gradient-end: #ffa07a;
+}
+
+@theme inline {
+  --font-sans: 'Inter', 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-quantum: var(--quantum);
+  --color-quantum-light: var(--quantum-light);
+  --color-neon: var(--neon);
+  --color-neon-light: var(--neon-light);
+  --color-coral: var(--coral);
+  --color-coral-light: var(--coral-light);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Glow effects */
+.glow-primary {
+  box-shadow: 0 0 20px var(--coral-glow), 0 0 40px var(--coral-glow);
+}
+
+.glow-neon {
+  box-shadow: 0 0 15px var(--neon-glow), 0 0 30px var(--neon-glow);
+}
+
+.glow-quantum {
+  box-shadow: 0 0 15px var(--quantum-glow), 0 0 30px var(--quantum-glow);
+}
+
+/* Card hover effect */
+.card-glow {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.card-glow:hover {
+  box-shadow: 0 0 20px rgba(0, 229, 204, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border-color: rgba(0, 229, 204, 0.3);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--coral) 0%, var(--coral-light) 50%, var(--neon) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animated gradient border */
+.gradient-border {
+  position: relative;
+  background: var(--card);
+  border-radius: var(--radius);
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: calc(var(--radius) + 1px);
+  padding: 1px;
+  background: linear-gradient(135deg, var(--coral) 0%, transparent 50%, var(--neon) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Neon line animation */
+@keyframes neon-flow {
+  0% { stroke-dashoffset: 1000; }
+  100% { stroke-dashoffset: 0; }
+}
+
+.animate-neon-flow {
+  animation: neon-flow 2s ease-in-out forwards;
+}
+
+/* Pulse animation */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Route animation */
+@keyframes route-dash {
+  to { stroke-dashoffset: -20; }
+}
+
+.animate-route {
+  animation: route-dash 0.5s linear infinite;
+}
+
+/* Fade in up */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out forwards;
+}
+
+/* Stagger children */
+.stagger-children > * {
+  opacity: 0;
+  animation: fade-in-up 0.4s ease-out forwards;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* Leaflet overrides */
+.leaflet-container {
+  background: var(--background) !important;
+  font-family: var(--font-sans) !important;
+}
+.leaflet-popup-content-wrapper {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  border-radius: var(--radius) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+.leaflet-popup-tip {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+}
+.leaflet-control-zoom {
+  border: none !important;
+  background: transparent !important;
+}
+.leaflet-control-zoom a {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-sm) !important;
+}
+.leaflet-control-zoom a:hover {
+  background: var(--muted) !important;
+  border-color: var(--neon) !important;
+}
