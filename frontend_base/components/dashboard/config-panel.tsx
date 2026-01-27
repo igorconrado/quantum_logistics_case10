@@ -11,9 +11,10 @@ import {
   Cpu,
   Route,
   Shuffle,
-  ChevronDown,
   Navigation,
   Info,
+  Loader2,
+  Play,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
@@ -37,8 +38,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useRoute } from "@/lib/route-context"
+import { useTranslation } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
-import { ALGORITHM_LABELS, ALGORITHM_LIMITS } from "@/lib/types"
+import { ALGORITHM_LIMITS, BRAZIL_CAPITALS } from "@/lib/types"
 
 export function ConfigPanel() {
   const {
@@ -46,7 +48,6 @@ export function ConfigPanel() {
     availableCities,
     addCity,
     removeCity,
-    reorderCities,
     setSelectedCities,
     config,
     updateConfig,
@@ -54,7 +55,10 @@ export function ConfigPanel() {
     calculateComparison,
     isCalculating,
     generateRandomPoints,
+    loadPoints,
+    isLoadingPoints,
   } = useRoute()
+  const { t } = useTranslation()
 
   const [addCityOpen, setAddCityOpen] = useState(false)
 
@@ -68,6 +72,8 @@ export function ConfigPanel() {
     setSelectedCities(newOrder.map((c, i) => ({ ...c, isHub: i === 0 })))
   }
 
+  const canGenerate = config.mode === "intercities" || (config.mode === "intracidade" && config.selectedCity)
+
   return (
     <div className="flex flex-col h-full">
       {/* Section: Route Mode */}
@@ -75,13 +81,16 @@ export function ConfigPanel() {
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
             <Route className="w-4 h-4 text-coral" />
-            Route Scope
+            {t("config.routeScope")}
           </h3>
         </div>
-        
+
         <div className="grid grid-cols-2 gap-2">
           <button
-            onClick={() => updateConfig({ mode: "intercities" })}
+            onClick={() => {
+              updateConfig({ mode: "intercities", selectedCity: null })
+              setSelectedCities([])
+            }}
             className={cn(
               "px-3 py-2.5 rounded-lg text-xs font-medium transition-all border",
               config.mode === "intercities"
@@ -89,10 +98,13 @@ export function ConfigPanel() {
                 : "bg-secondary/50 border-border text-muted-foreground hover:border-muted-foreground"
             )}
           >
-            Intercities
+            {t("config.intercities")}
           </button>
           <button
-            onClick={() => updateConfig({ mode: "intracidade" })}
+            onClick={() => {
+              updateConfig({ mode: "intracidade", selectedCity: null })
+              setSelectedCities([])
+            }}
             className={cn(
               "px-3 py-2.5 rounded-lg text-xs font-medium transition-all border",
               config.mode === "intracidade"
@@ -100,9 +112,91 @@ export function ConfigPanel() {
                 : "bg-secondary/50 border-border text-muted-foreground hover:border-muted-foreground"
             )}
           >
-            Intracidade
+            {t("config.intracity")}
           </button>
         </div>
+
+        {/* City selector for intracidade */}
+        {config.mode === "intracidade" && (
+          <div className="mt-3">
+            <Select
+              value={config.selectedCity || ""}
+              onValueChange={(v) => {
+                updateConfig({ selectedCity: v })
+                setSelectedCities([])
+              }}
+            >
+              <SelectTrigger className="bg-secondary/50 border-border">
+                <SelectValue placeholder={t("config.selectCity")} />
+              </SelectTrigger>
+              <SelectContent className="max-h-60">
+                {BRAZIL_CAPITALS.map((city) => (
+                  <SelectItem key={city.key} value={city.key}>
+                    {city.name} ({city.state})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        {/* Num points slider */}
+        {config.mode === "intracidade" && config.selectedCity && (
+          <div className="mt-3 flex items-center justify-between">
+            <Label className="text-xs text-muted-foreground">{t("config.numNeighborhoods")}</Label>
+            <Select
+              value={String(config.numPoints)}
+              onValueChange={(v) => updateConfig({ numPoints: Number(v) })}
+            >
+              <SelectTrigger className="w-20 bg-secondary/50 border-border h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                  <SelectItem key={n} value={String(n)}>{n}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        {config.mode === "intercities" && (
+          <div className="mt-3 flex items-center justify-between">
+            <Label className="text-xs text-muted-foreground">{t("config.waypoints")}</Label>
+            <Select
+              value={String(config.numPoints)}
+              onValueChange={(v) => updateConfig({ numPoints: Number(v) })}
+            >
+              <SelectTrigger className="w-20 bg-secondary/50 border-border h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[3, 4, 5, 6, 7, 8, 10, 12, 15, 20, 27].map((n) => (
+                  <SelectItem key={n} value={String(n)}>{n}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        {/* Generate Points button */}
+        <Button
+          className="w-full mt-3 bg-gradient-to-r from-quantum/80 to-quantum hover:from-quantum hover:to-quantum/80 text-primary-foreground font-medium"
+          onClick={loadPoints}
+          disabled={!canGenerate || isLoadingPoints}
+        >
+          {isLoadingPoints ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              {t("config.loadingPoints")}
+            </>
+          ) : (
+            <>
+              <Play className="w-4 h-4 mr-2" />
+              {t("config.generatePoints")}
+            </>
+          )}
+        </Button>
       </div>
 
       {/* Section: Algorithm */}
@@ -110,7 +204,7 @@ export function ConfigPanel() {
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
             <Cpu className="w-4 h-4 text-quantum" />
-            Algorithm
+            {t("config.algorithm")}
           </h3>
           <TooltipProvider>
             <Tooltip>
@@ -118,7 +212,7 @@ export function ConfigPanel() {
                 <Info className="w-3.5 h-3.5 text-muted-foreground" />
               </TooltipTrigger>
               <TooltipContent className="max-w-xs">
-                <p>Quantum limited to {ALGORITHM_LIMITS.quantum_numpy} points. Classical supports up to {ALGORITHM_LIMITS.nearest_neighbor} points.</p>
+                <p>{t("config.algorithmTooltip", { quantumLimit: ALGORITHM_LIMITS.quantum_numpy, classicalLimit: ALGORITHM_LIMITS.nearest_neighbor })}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -136,7 +230,7 @@ export function ConfigPanel() {
               )}
             >
               <Cpu className="w-3.5 h-3.5" />
-              Classical
+              {t("config.classical")}
             </button>
             <button
               onClick={() => updateConfig({ algorithmType: "quantum" })}
@@ -148,7 +242,7 @@ export function ConfigPanel() {
               )}
             >
               <Zap className="w-3.5 h-3.5" />
-              Quantum
+              {t("config.quantum")}
             </button>
           </div>
 
@@ -162,13 +256,13 @@ export function ConfigPanel() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="brute_force">
-                  {ALGORITHM_LABELS.brute_force} (max 8)
+                  {t("algo.brute_force")} (max 8)
                 </SelectItem>
                 <SelectItem value="nearest_neighbor">
-                  {ALGORITHM_LABELS.nearest_neighbor}
+                  {t("algo.nearest_neighbor")}
                 </SelectItem>
                 <SelectItem value="networkx">
-                  {ALGORITHM_LABELS.networkx}
+                  {t("algo.networkx")}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -182,10 +276,10 @@ export function ConfigPanel() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="quantum_numpy">
-                  {ALGORITHM_LABELS.quantum_numpy}
+                  {t("algo.quantum_numpy")}
                 </SelectItem>
                 <SelectItem value="quantum_qaoa">
-                  {ALGORITHM_LABELS.quantum_qaoa}
+                  {t("algo.quantum_qaoa")}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -199,7 +293,7 @@ export function ConfigPanel() {
           <div className="flex items-center gap-2">
             <Navigation className="w-4 h-4 text-muted-foreground" />
             <Label htmlFor="real-roads" className="text-sm text-foreground cursor-pointer">
-              Use Real Roads
+              {t("config.useRealRoads")}
             </Label>
           </div>
           <Switch
@@ -209,136 +303,138 @@ export function ConfigPanel() {
           />
         </div>
         <p className="text-xs text-muted-foreground mt-1.5 ml-6">
-          OpenRouteService API (2k req/day)
+          {t("config.realRoadsDesc")}
         </p>
       </div>
 
-      {/* Section: Waypoints */}
-      <div className="flex-1 flex flex-col min-h-0">
-        <div className="p-4 pb-2">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-coral" />
-              Waypoints
-              <span className={cn(
-                "text-xs font-mono px-1.5 py-0.5 rounded",
-                isOverLimit ? "bg-error/20 text-error" : "bg-secondary text-muted-foreground"
-              )}>
-                {selectedCities.length}/{currentLimit}
-              </span>
-            </h3>
-            <div className="flex items-center gap-1">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
+      {/* Section: Waypoints list */}
+      {selectedCities.length > 0 && (
+        <div className="flex-1 flex flex-col min-h-0">
+          <div className="p-4 pb-2">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-coral" />
+                {t("config.waypoints")}
+                <span className={cn(
+                  "text-xs font-mono px-1.5 py-0.5 rounded",
+                  isOverLimit ? "bg-error/20 text-error" : "bg-secondary text-muted-foreground"
+                )}>
+                  {selectedCities.length}/{currentLimit}
+                </span>
+              </h3>
+              <div className="flex items-center gap-1">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => generateRandomPoints(Math.min(5, currentLimit))}
+                      >
+                        <Shuffle className="w-3.5 h-3.5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>{t("config.randomPoints")}</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <Popover open={addCityOpen} onOpenChange={setAddCityOpen}>
+                  <PopoverTrigger asChild>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-7 w-7"
-                      onClick={() => generateRandomPoints(Math.min(5, currentLimit))}
+                      disabled={availableCities.length === 0 || selectedCities.length >= currentLimit}
                     >
-                      <Shuffle className="w-3.5 h-3.5" />
+                      <Plus className="w-3.5 h-3.5" />
                     </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Random points</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-
-              <Popover open={addCityOpen} onOpenChange={setAddCityOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7"
-                    disabled={availableCities.length === 0 || selectedCities.length >= currentLimit}
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-56 p-2" align="end">
-                  <div className="space-y-1 max-h-60 overflow-y-auto">
-                    {availableCities.map((city) => (
-                      <button
-                        key={city.id}
-                        className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm hover:bg-secondary transition-colors text-left"
-                        onClick={() => {
-                          addCity(city)
-                          setAddCityOpen(false)
-                        }}
-                      >
-                        <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
-                        <span>{city.name}</span>
-                        <span className="text-xs text-muted-foreground ml-auto">{city.state}</span>
-                      </button>
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-56 p-2" align="end">
+                    <div className="space-y-1 max-h-60 overflow-y-auto">
+                      {availableCities.map((city) => (
+                        <button
+                          key={city.id}
+                          className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm hover:bg-secondary transition-colors text-left"
+                          onClick={() => {
+                            addCity(city)
+                            setAddCityOpen(false)
+                          }}
+                        >
+                          <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+                          <span>{city.name}</span>
+                          <span className="text-xs text-muted-foreground ml-auto">{city.state}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Draggable city list */}
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
-          <Reorder.Group
-            axis="y"
-            values={selectedCities}
-            onReorder={handleDragEnd}
-            className="space-y-2"
-          >
-            <AnimatePresence mode="popLayout">
-              {selectedCities.map((city, index) => (
-                <Reorder.Item
-                  key={city.id}
-                  value={city}
-                  className={cn(
-                    "flex items-center gap-2 p-2.5 rounded-lg border transition-colors cursor-grab active:cursor-grabbing",
-                    city.isHub
-                      ? "bg-coral/10 border-coral/30"
-                      : "bg-secondary/50 border-border hover:border-muted-foreground"
-                  )}
-                >
-                  <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                  <div className={cn(
-                    "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0",
-                    city.isHub
-                      ? "bg-coral text-primary-foreground"
-                      : "bg-quantum text-primary-foreground"
-                  )}>
-                    {city.isHub ? "H" : index + 1}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">{city.name}</p>
-                    <p className="text-xs text-muted-foreground">{city.state}</p>
-                  </div>
-                  {!city.isHub && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-6 w-6 text-muted-foreground hover:text-error flex-shrink-0"
-                      onClick={() => removeCity(city.id)}
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </Button>
-                  )}
-                </Reorder.Item>
-              ))}
-            </AnimatePresence>
-          </Reorder.Group>
-
-          {isOverLimit && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-3 p-2 rounded-lg bg-error/10 border border-error/30"
+          {/* Draggable city list */}
+          <div className="flex-1 overflow-y-auto px-4 pb-4">
+            <Reorder.Group
+              axis="y"
+              values={selectedCities}
+              onReorder={handleDragEnd}
+              className="space-y-2"
             >
-              <p className="text-xs text-error">
-                Too many points for {config.algorithmType} algorithm. Max: {currentLimit}
-              </p>
-            </motion.div>
-          )}
+              <AnimatePresence mode="popLayout">
+                {selectedCities.map((city, index) => (
+                  <Reorder.Item
+                    key={city.id}
+                    value={city}
+                    className={cn(
+                      "flex items-center gap-2 p-2.5 rounded-lg border transition-colors cursor-grab active:cursor-grabbing",
+                      city.isHub
+                        ? "bg-coral/10 border-coral/30"
+                        : "bg-secondary/50 border-border hover:border-muted-foreground"
+                    )}
+                  >
+                    <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                    <div className={cn(
+                      "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0",
+                      city.isHub
+                        ? "bg-coral text-primary-foreground"
+                        : "bg-quantum text-primary-foreground"
+                    )}>
+                      {city.isHub ? "H" : index + 1}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">{city.name}</p>
+                      <p className="text-xs text-muted-foreground">{city.state}</p>
+                    </div>
+                    {!city.isHub && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 text-muted-foreground hover:text-error flex-shrink-0"
+                        onClick={() => removeCity(city.id)}
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </Button>
+                    )}
+                  </Reorder.Item>
+                ))}
+              </AnimatePresence>
+            </Reorder.Group>
+
+            {isOverLimit && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-3 p-2 rounded-lg bg-error/10 border border-error/30"
+              >
+                <p className="text-xs text-error">
+                  {t("config.tooManyPoints", { type: config.algorithmType, limit: currentLimit })}
+                </p>
+              </motion.div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Action buttons */}
       <div className="p-4 border-t border-border space-y-2">
@@ -354,16 +450,16 @@ export function ConfigPanel() {
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               />
-              Calculating...
+              {t("config.calculating")}
             </>
           ) : (
             <>
               <Zap className="w-4 h-4 mr-2" />
-              Calculate Route
+              {t("config.calculateRoute")}
             </>
           )}
         </Button>
-        
+
         <Button
           variant="outline"
           className="w-full border-quantum/50 text-quantum hover:bg-quantum/10 bg-transparent"
@@ -371,7 +467,7 @@ export function ConfigPanel() {
           disabled={isCalculating || selectedCities.length < 2 || selectedCities.length > 4}
         >
           <Cpu className="w-4 h-4 mr-2" />
-          Compare Quantum vs Classical
+          {t("config.compareQuantumClassical")}
         </Button>
       </div>
     </div>
