@@ -14,18 +14,18 @@ import {
   BarChart3,
   History,
   Trash2,
-  ArrowRight,
   Cpu,
   Activity,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useRoute } from "@/lib/route-context"
+import { useTranslation } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
-import { ALGORITHM_LABELS } from "@/lib/types"
 
 export function ResultsPanel() {
   const { results, comparison, history, clearHistory, config } = useRoute()
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState("results")
 
   return (
@@ -35,11 +35,11 @@ export function ResultsPanel() {
           <TabsList className="w-full bg-secondary/50">
             <TabsTrigger value="results" className="flex-1 text-xs">
               <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
-              Results
+              {t("results.results")}
             </TabsTrigger>
             <TabsTrigger value="history" className="flex-1 text-xs">
               <History className="w-3.5 h-3.5 mr-1.5" />
-              History
+              {t("results.history")}
             </TabsTrigger>
           </TabsList>
         </div>
@@ -54,77 +54,44 @@ export function ResultsPanel() {
                 exit={{ opacity: 0, y: -20 }}
                 className="space-y-4"
               >
-                {/* Main metrics */}
                 <div className="grid grid-cols-2 gap-3">
-                  <MetricCard
-                    icon={Route}
-                    label="Total Distance"
-                    value={`${results.totalDistance.toLocaleString()}`}
-                    unit="km"
-                    color="neon"
-                  />
-                  <MetricCard
-                    icon={Fuel}
-                    label="Fuel Cost"
-                    value={`R$ ${results.fuelCost?.toLocaleString()}`}
-                    color="coral"
-                  />
-                  <MetricCard
-                    icon={Clock}
-                    label="Calc Time"
-                    value={results.timeMs < 1 ? results.timeMs.toFixed(3) : results.timeMs.toFixed(2)}
-                    unit="ms"
-                    color="quantum"
-                  />
+                  <MetricCard icon={Route} label={t("results.totalDistance")} value={`${results.totalDistance.toLocaleString()}`} unit="km" color="neon" />
+                  <MetricCard icon={Fuel} label={t("results.fuelCost")} value={`R$ ${results.fuelCost?.toLocaleString()}`} color="coral" />
+                  <MetricCard icon={Clock} label={t("results.calcTime")} value={results.timeMs < 1 ? results.timeMs.toFixed(3) : results.timeMs.toFixed(2)} unit="ms" color="quantum" />
                   {results.totalDurationMin && (
-                    <MetricCard
-                      icon={Activity}
-                      label="Drive Time"
-                      value={`${Math.floor(results.totalDurationMin / 60)}h ${results.totalDurationMin % 60}m`}
-                      color="muted"
-                    />
+                    <MetricCard icon={Activity} label={t("results.driveTime")} value={`${Math.floor(results.totalDurationMin / 60)}h ${results.totalDurationMin % 60}m`} color="muted" />
                   )}
                 </div>
 
-                {/* Algorithm info */}
                 <div className="p-3 rounded-lg bg-secondary/50 border border-border">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className={cn(
-                        "w-8 h-8 rounded-lg flex items-center justify-center",
-                        config.algorithmType === "quantum" ? "bg-quantum/20" : "bg-neon/20"
-                      )}>
-                        {config.algorithmType === "quantum" ? (
-                          <Zap className="w-4 h-4 text-quantum" />
-                        ) : (
-                          <Cpu className="w-4 h-4 text-neon" />
-                        )}
+                      <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", config.algorithmType === "quantum" ? "bg-quantum/20" : "bg-neon/20")}>
+                        {config.algorithmType === "quantum" ? <Zap className="w-4 h-4 text-quantum" /> : <Cpu className="w-4 h-4 text-neon" />}
                       </div>
                       <div>
-                        <p className="text-xs text-muted-foreground">Method</p>
+                        <p className="text-xs text-muted-foreground">{t("results.method")}</p>
                         <p className="text-sm font-medium text-foreground">
-                          {ALGORITHM_LABELS[results.method] || results.method}
+                          {t(`algo.${results.method}`) !== `algo.${results.method}` ? t(`algo.${results.method}`) : results.method}
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-muted-foreground">Roads</p>
+                      <p className="text-xs text-muted-foreground">{t("results.roads")}</p>
                       <p className="text-sm font-medium text-foreground">
-                        {results.usedRealRoads ? "Real" : "Haversine"}
+                        {results.usedRealRoads ? t("results.realRoads") : t("results.haversine")}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Comparison results */}
                 {comparison.classical && comparison.quantum && (
                   <ComparisonCard comparison={comparison} />
                 )}
 
-                {/* Route sequence */}
                 <div className="space-y-2">
                   <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    Optimized Sequence
+                    {t("results.optimizedSequence")}
                   </h4>
                   <div className="space-y-1">
                     {results.sequence?.map((city, index) => (
@@ -152,25 +119,14 @@ export function ResultsPanel() {
                   </div>
                 </div>
 
-                {/* Export buttons */}
                 <div className="flex gap-2 pt-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 text-xs bg-transparent"
-                    onClick={() => exportCSV(results)}
-                  >
+                  <Button variant="outline" size="sm" className="flex-1 text-xs bg-transparent" onClick={() => exportCSV(results, t)}>
                     <Download className="w-3.5 h-3.5 mr-1.5" />
-                    Export CSV
+                    {t("results.exportCsv")}
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 text-xs bg-transparent"
-                    onClick={() => window.print()}
-                  >
+                  <Button variant="outline" size="sm" className="flex-1 text-xs bg-transparent" onClick={() => window.print()}>
                     <Printer className="w-3.5 h-3.5 mr-1.5" />
-                    Print
+                    {t("results.print")}
                   </Button>
                 </div>
               </motion.div>
@@ -185,12 +141,8 @@ export function ResultsPanel() {
                 <div className="w-16 h-16 rounded-2xl bg-secondary/50 flex items-center justify-center mb-4">
                   <BarChart3 className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <h3 className="text-sm font-medium text-foreground mb-1">
-                  No Results Yet
-                </h3>
-                <p className="text-xs text-muted-foreground max-w-[200px]">
-                  Configure your route and click Calculate to see optimization results
-                </p>
+                <h3 className="text-sm font-medium text-foreground mb-1">{t("results.noResults")}</h3>
+                <p className="text-xs text-muted-foreground max-w-[200px]">{t("results.noResultsDesc")}</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -201,16 +153,11 @@ export function ResultsPanel() {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <p className="text-xs text-muted-foreground">
-                  {history.length} calculation{history.length !== 1 ? "s" : ""}
+                  {history.length} {t("results.calculations")}
                 </p>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-xs text-muted-foreground hover:text-error"
-                  onClick={clearHistory}
-                >
+                <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-error" onClick={clearHistory}>
                   <Trash2 className="w-3.5 h-3.5 mr-1" />
-                  Clear
+                  {t("results.clear")}
                 </Button>
               </div>
               {history.map((item, index) => (
@@ -222,36 +169,23 @@ export function ResultsPanel() {
                   className="p-3 rounded-lg bg-secondary/50 border border-border"
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-muted-foreground">
-                      {item.timestamp.toLocaleTimeString()}
-                    </span>
-                    <span className={cn(
-                      "text-xs px-2 py-0.5 rounded",
-                      item.config.algorithmType === "quantum"
-                        ? "bg-quantum/20 text-quantum"
-                        : "bg-neon/20 text-neon"
-                    )}>
+                    <span className="text-xs text-muted-foreground">{item.timestamp.toLocaleTimeString()}</span>
+                    <span className={cn("text-xs px-2 py-0.5 rounded", item.config.algorithmType === "quantum" ? "bg-quantum/20 text-quantum" : "bg-neon/20 text-neon")}>
                       {item.config.algorithmType}
                     </span>
                   </div>
                   <div className="flex items-center gap-4 text-sm">
                     <div>
-                      <p className="text-xs text-muted-foreground">Distance</p>
-                      <p className="font-mono font-medium text-foreground">
-                        {item.result.totalDistance.toLocaleString()} km
-                      </p>
+                      <p className="text-xs text-muted-foreground">{t("results.distance")}</p>
+                      <p className="font-mono font-medium text-foreground">{item.result.totalDistance.toLocaleString()} km</p>
                     </div>
                     <div>
-                      <p className="text-xs text-muted-foreground">Time</p>
-                      <p className="font-mono font-medium text-foreground">
-                        {item.result.timeMs.toFixed(2)} ms
-                      </p>
+                      <p className="text-xs text-muted-foreground">{t("results.time")}</p>
+                      <p className="font-mono font-medium text-foreground">{item.result.timeMs.toFixed(2)} ms</p>
                     </div>
                     <div>
-                      <p className="text-xs text-muted-foreground">Points</p>
-                      <p className="font-mono font-medium text-foreground">
-                        {item.points.length}
-                      </p>
+                      <p className="text-xs text-muted-foreground">{t("results.points")}</p>
+                      <p className="font-mono font-medium text-foreground">{item.points.length}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -262,12 +196,8 @@ export function ResultsPanel() {
               <div className="w-16 h-16 rounded-2xl bg-secondary/50 flex items-center justify-center mb-4">
                 <History className="w-8 h-8 text-muted-foreground" />
               </div>
-              <h3 className="text-sm font-medium text-foreground mb-1">
-                No History
-              </h3>
-              <p className="text-xs text-muted-foreground max-w-[200px]">
-                Your calculation history will appear here
-              </p>
+              <h3 className="text-sm font-medium text-foreground mb-1">{t("results.noHistory")}</h3>
+              <p className="text-xs text-muted-foreground max-w-[200px]">{t("results.noHistoryDesc")}</p>
             </div>
           )}
         </TabsContent>
@@ -297,14 +227,7 @@ function MetricCard({
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className={cn(
-        "p-3 rounded-lg border",
-        colorClasses[color]
-      )}
-    >
+    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className={cn("p-3 rounded-lg border", colorClasses[color])}>
       <div className="flex items-center gap-2 mb-1">
         <Icon className="w-3.5 h-3.5" />
         <span className="text-xs opacity-80">{label}</span>
@@ -318,68 +241,60 @@ function MetricCard({
 }
 
 function ComparisonCard({ comparison }: { comparison: any }) {
+  const { t } = useTranslation()
   const speedup = comparison.speedup?.toFixed(1) || "N/A"
   const distDiff = comparison.distanceDiff || 0
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="p-4 rounded-xl bg-gradient-to-br from-quantum/10 to-neon/10 border border-quantum/30"
-    >
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-4 rounded-xl bg-gradient-to-br from-quantum/10 to-neon/10 border border-quantum/30">
       <h4 className="text-xs font-semibold text-foreground mb-3 flex items-center gap-2">
         <Zap className="w-4 h-4 text-quantum" />
-        Algorithm Comparison
+        {t("results.algorithmComparison")}
       </h4>
-
       <div className="grid grid-cols-2 gap-4 mb-3">
         <div className="text-center">
-          <p className="text-xs text-muted-foreground mb-1">Classical</p>
+          <p className="text-xs text-muted-foreground mb-1">{t("config.classical")}</p>
           <p className="text-lg font-bold font-mono text-neon">
-            {comparison.classical?.timeMs.toFixed(2)}
-            <span className="text-xs ml-1">ms</span>
+            {comparison.classical?.timeMs.toFixed(2)}<span className="text-xs ml-1">ms</span>
           </p>
         </div>
         <div className="text-center">
-          <p className="text-xs text-muted-foreground mb-1">Quantum</p>
+          <p className="text-xs text-muted-foreground mb-1">{t("config.quantum")}</p>
           <p className="text-lg font-bold font-mono text-quantum">
-            {comparison.quantum?.timeMs.toFixed(3)}
-            <span className="text-xs ml-1">ms</span>
+            {comparison.quantum?.timeMs.toFixed(3)}<span className="text-xs ml-1">ms</span>
           </p>
         </div>
       </div>
-
       <div className="flex items-center justify-center gap-2 p-2 rounded-lg bg-background/50">
         <TrendingDown className="w-4 h-4 text-neon" />
         <span className="text-sm font-medium text-foreground">
-          Quantum is <span className="text-neon font-bold">{speedup}x</span> faster
+          {t("results.quantumFaster", { speedup })}
         </span>
       </div>
-
       {distDiff !== 0 && (
         <p className="text-xs text-muted-foreground text-center mt-2">
-          Distance diff: {distDiff > 0 ? "+" : ""}{distDiff.toFixed(0)} km
+          {t("results.distanceDiff")} {distDiff > 0 ? "+" : ""}{distDiff.toFixed(0)} km
         </p>
       )}
     </motion.div>
   )
 }
 
-function exportCSV(results: any) {
+function exportCSV(results: any, t: (key: string, params?: Record<string, string | number>) => string) {
   const rows = [
-    ["Metric", "Value"],
-    ["Total Distance (km)", results.totalDistance],
-    ["Fuel Cost (R$)", results.fuelCost],
-    ["Calculation Time (ms)", results.timeMs.toFixed(3)],
-    ["Method", results.method],
-    ["Used Real Roads", results.usedRealRoads ? "Yes" : "No"],
+    [t("csv.metric"), t("csv.value")],
+    [t("csv.totalDistance"), results.totalDistance],
+    [t("csv.fuelCost"), results.fuelCost],
+    [t("csv.calcTime"), results.timeMs.toFixed(3)],
+    [t("csv.method"), results.method],
+    [t("csv.usedRealRoads"), results.usedRealRoads ? t("csv.yes") : t("csv.no")],
   ]
 
   if (results.sequence) {
     rows.push(["", ""])
-    rows.push(["Route Sequence", ""])
+    rows.push([t("csv.routeSequence"), ""])
     results.sequence.forEach((city: any, i: number) => {
-      rows.push([`Stop ${i + 1}`, city.name])
+      rows.push([t("csv.stop", { n: i + 1 }), city.name])
     })
   }
 

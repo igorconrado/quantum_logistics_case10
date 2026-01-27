@@ -10,9 +10,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useRoute } from "@/lib/route-context"
+import { useTranslation } from "@/lib/i18n"
 
 export function DashboardHeader() {
   const { apiStatus, isCalculating } = useRoute()
+  const { locale, setLocale, t } = useTranslation()
 
   return (
     <header className="flex items-center justify-between px-6 py-4 border-b border-border bg-card/50 backdrop-blur-sm">
@@ -38,10 +40,10 @@ export function DashboardHeader() {
           </div>
           <div>
             <h1 className="text-lg font-semibold text-foreground tracking-tight">
-              Quantum Logistics
+              {t("header.title")}
             </h1>
             <p className="text-xs text-muted-foreground">
-              Route Optimization Platform
+              {t("header.subtitle")}
             </p>
           </div>
         </motion.div>
@@ -66,12 +68,12 @@ export function DashboardHeader() {
                     <WifiOff className="w-3.5 h-3.5 text-muted-foreground" />
                   )}
                   <span className="text-xs font-medium text-muted-foreground">
-                    {apiStatus.online ? "API Online" : "Offline Mode"}
+                    {apiStatus.online ? t("header.apiOnline") : t("header.offlineMode")}
                   </span>
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                <p>OpenRouteService API Status</p>
+                <p>{t("header.apiStatus")}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -84,7 +86,7 @@ export function DashboardHeader() {
             >
               <Activity className="w-3.5 h-3.5 text-quantum animate-pulse" />
               <span className="text-xs font-medium text-quantum">
-                Processing...
+                {t("header.processing")}
               </span>
             </motion.div>
           )}
@@ -98,6 +100,26 @@ export function DashboardHeader() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5 }}
       >
+        {/* Language Toggle */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs font-medium gap-1.5 px-2.5"
+                onClick={() => setLocale(locale === "pt-BR" ? "en-US" : "pt-BR")}
+              >
+                <span className="text-base leading-none">{locale === "pt-BR" ? "🇧🇷" : "🇺🇸"}</span>
+                <span className="text-muted-foreground">{locale === "pt-BR" ? "PT" : "EN"}</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{locale === "pt-BR" ? "Switch to English" : "Mudar para Português"}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -106,7 +128,7 @@ export function DashboardHeader() {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Help & Documentation</p>
+              <p>{t("header.help")}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
@@ -119,7 +141,7 @@ export function DashboardHeader() {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Settings</p>
+              <p>{t("header.settings")}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

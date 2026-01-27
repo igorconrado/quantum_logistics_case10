@@ -9,13 +9,16 @@ import { ResultsPanel } from "@/components/dashboard/results-panel"
 import { DistanceMatrix } from "@/components/dashboard/distance-matrix"
 import { MobileNav } from "@/components/dashboard/mobile-nav"
 import { RouteProvider } from "@/lib/route-context"
+import { I18nProvider } from "@/lib/i18n"
 import { cn } from "@/lib/utils"
+import { useTranslation } from "@/lib/i18n"
 import { Grid3X3, ChevronUp, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 function DashboardContent() {
   const [mobileTab, setMobileTab] = useState("map")
   const [showMatrix, setShowMatrix] = useState(false)
+  const { t } = useTranslation()
 
   return (
     <div className="flex flex-col h-screen w-full overflow-hidden bg-background">
@@ -51,7 +54,7 @@ function DashboardContent() {
               onClick={() => setShowMatrix(!showMatrix)}
             >
               <Grid3X3 className="w-4 h-4 mr-2" />
-              Distance Matrix
+              {t("matrix.button")}
               {showMatrix ? (
                 <ChevronDown className="w-4 h-4 ml-2" />
               ) : (
@@ -141,8 +144,10 @@ function DashboardContent() {
 
 export default function QuantumLogisticsDashboard() {
   return (
-    <RouteProvider>
-      <DashboardContent />
-    </RouteProvider>
+    <I18nProvider>
+      <RouteProvider>
+        <DashboardContent />
+      </RouteProvider>
+    </I18nProvider>
   )
 }

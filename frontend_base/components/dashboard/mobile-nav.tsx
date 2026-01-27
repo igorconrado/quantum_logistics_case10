@@ -3,28 +3,31 @@
 import { motion } from "framer-motion"
 import { Map, Settings2, BarChart3, History } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useTranslation } from "@/lib/i18n"
 
 interface MobileNavProps {
   activeTab: string
   onTabChange: (tab: string) => void
 }
 
-const tabs = [
-  { id: "config", label: "Config", icon: Settings2 },
-  { id: "map", label: "Map", icon: Map },
-  { id: "results", label: "Results", icon: BarChart3 },
-  { id: "history", label: "History", icon: History },
+const tabDefs = [
+  { id: "config", labelKey: "nav.config", icon: Settings2 },
+  { id: "map", labelKey: "nav.map", icon: Map },
+  { id: "results", labelKey: "nav.results", icon: BarChart3 },
+  { id: "history", labelKey: "nav.history", icon: History },
 ]
 
 export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
+  const { t } = useTranslation()
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
       <div className="bg-card/95 backdrop-blur-lg border-t border-border px-2 pb-safe">
         <div className="flex items-center justify-around py-2">
-          {tabs.map((tab) => {
+          {tabDefs.map((tab) => {
             const isActive = activeTab === tab.id
             const Icon = tab.icon
-            
+
             return (
               <button
                 key={tab.id}
@@ -49,7 +52,7 @@ export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
                   "relative z-10 text-[10px] font-medium",
                   isActive && "text-coral"
                 )}>
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </span>
               </button>
             )
