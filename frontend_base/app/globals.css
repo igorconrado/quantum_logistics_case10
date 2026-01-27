@@ -273,3 +273,20 @@
   background: var(--muted) !important;
   border-color: var(--neon) !important;
 }
+.leaflet-tooltip {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.leaflet-tooltip-top::before,
+.leaflet-tooltip-bottom::before,
+.leaflet-tooltip-left::before,
+.leaflet-tooltip-right::before {
+  display: none !important;
+}
+/* Markers above route line */
+.leaflet-marker-pane,
+.leaflet-overlay-pane svg circle {
+  z-index: 600 !important;
+}

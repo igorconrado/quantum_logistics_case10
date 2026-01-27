@@ -44,6 +44,18 @@ function MapControllerInner({ selectedCities }: { selectedCities: City[] }) {
     }
   }, [selectedCities, map])
 
+  // Configure smooth zoom and custom pane
+  useEffect(() => {
+    if (!map) return
+    map.options.zoomSnap = 0.5
+    map.options.zoomDelta = 0.5
+    map.options.wheelDebounceTime = 100
+    if (!map.getPane("markersPane")) {
+      const pane = map.createPane("markersPane")
+      pane.style.zIndex = "650"
+    }
+  }, [map])
+
   return null
 }
 
@@ -54,7 +66,7 @@ const MapController = dynamic(() => Promise.resolve(MapControllerInner), {
 export function RouteMap() {
   const { selectedCities, results, isCalculating, calculationProgress, config } = useRoute()
   const [mapReady, setMapReady] = useState(false)
-  const [mapStyle, setMapStyle] = useState<"dark" | "satellite">("dark")
+  const [mapStyle, setMapStyle] = useState<"default" | "satellite">("default")
   const mapRef = useRef<any>(null)
 
   useEffect(() => {
@@ -93,19 +105,22 @@ export function RouteMap() {
       {/* Leaflet Map */}
       {mapReady && typeof window !== "undefined" && (
         <MapContainer
+          key="main-map"
           ref={mapRef}
           center={[-15.7801, -47.9292]}
           zoom={4}
           className="h-full w-full"
-          zoomControl={false}
+          zoomControl={true}
+          scrollWheelZoom={true}
           attributionControl={false}
         >
           <TileLayer
             url={
-              mapStyle === "dark"
-                ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+              mapStyle === "default"
+                ? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 : "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
             }
+            attribution={mapStyle === "default" ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' : ""}
           />
 
           <MapController selectedCities={selectedCities} />
@@ -129,6 +144,7 @@ export function RouteMap() {
               key={city.id}
               center={[city.lat, city.lng]}
               radius={city.isHub ? 14 : 10}
+              pane="markersPane"
               pathOptions={{
                 fillColor: city.isHub ? "#ff6b35" : "#6366f1",
                 fillOpacity: 1,
@@ -225,7 +241,7 @@ export function RouteMap() {
         <Button
           variant="secondary"
           size="icon"
-          onClick={() => setMapStyle(mapStyle === "dark" ? "satellite" : "dark")}
+          onClick={() => setMapStyle(mapStyle === "default" ? "satellite" : "default")}
           className="bg-card/90 backdrop-blur-sm border border-border hover:border-neon/50"
         >
           <Layers className="w-4 h-4" />
