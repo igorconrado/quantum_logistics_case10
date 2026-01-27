@@ -79,5 +79,10 @@ docs/_build/
 implementation_plan.md
 task.md
 
+# Node.js / Next.js
+node_modules/
+frontend_base/.next/
+frontend_base/out/
+
 # Editor/Tool configs
 .claude/
