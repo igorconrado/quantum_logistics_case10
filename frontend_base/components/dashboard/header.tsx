@@ -107,10 +107,19 @@ export function DashboardHeader() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-xs font-medium gap-1.5 px-2.5"
+                className="text-xs font-medium gap-1.5 px-2.5 h-9"
                 onClick={() => setLocale(locale === "pt-BR" ? "en-US" : "pt-BR")}
               >
-                <span className="text-base leading-none">{locale === "pt-BR" ? "🇧🇷" : "🇺🇸"}</span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={locale === "pt-BR"
+                    ? "https://flagcdn.com/w40/br.png"
+                    : "https://flagcdn.com/w40/us.png"}
+                  alt={locale === "pt-BR" ? "Brasil" : "USA"}
+                  width={24}
+                  height={16}
+                  className="rounded-sm object-cover"
+                />
                 <span className="text-muted-foreground">{locale === "pt-BR" ? "PT" : "EN"}</span>
               </Button>
             </TooltipTrigger>
