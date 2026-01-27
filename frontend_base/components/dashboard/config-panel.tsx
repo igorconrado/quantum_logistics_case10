@@ -65,7 +65,7 @@ export function ConfigPanel() {
   const isOverLimit = selectedCities.length > currentLimit
 
   const handleDragEnd = (newOrder: typeof selectedCities) => {
-    setSelectedCities(newOrder)
+    setSelectedCities(newOrder.map((c, i) => ({ ...c, isHub: i === 0 })))
   }
 
   return (
