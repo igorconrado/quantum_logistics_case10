@@ -86,3 +86,8 @@ frontend_base/out/
 
 # Editor/Tool configs
 .claude/
+CLAUDE.md
+.claudeignore
+
+# Windows artifacts
+nul
