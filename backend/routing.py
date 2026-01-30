@@ -342,8 +342,18 @@ def get_distance_matrix_real(locations: List[Dict]) -> RealDistanceMatrix:
                 error=f"Resposta inválida: {data.get('error', 'Sem distances')}"
             )
 
-        distances = np.array(data["distances"])
-        durations = np.array(data.get("durations", [])) / 60  # segundos -> minutos
+        # ORS may return None for unreachable pairs - replace with 0
+        raw_distances = data["distances"]
+        raw_durations = data.get("durations", [])
+
+        distances = np.array(
+            [[0 if v is None else v for v in row] for row in raw_distances],
+            dtype=float
+        )
+        durations = np.array(
+            [[0 if v is None else v for v in row] for row in raw_durations],
+            dtype=float
+        ) / 60  # seconds -> minutes
 
         result = RealDistanceMatrix(
             distances=distances,
@@ -405,16 +415,63 @@ def convert_route_to_ors_format(locations: List[Dict], route_indices: List[int])
 def get_route_with_geometry(locations: List[Dict], route_indices: List[int]) -> RealRoute:
     """
     Obtém a geometria real de uma rota já calculada.
+    Segments the route into consecutive pairs to avoid the ORS 6000km limit.
 
     Args:
         locations: Lista de localizações
         route_indices: Ordem da rota (output do solver)
 
     Returns:
-        RealRoute com geometria das estradas
+        RealRoute com geometria das estradas (concatenated segments)
     """
     coordinates = convert_route_to_ors_format(locations, route_indices)
-    return get_real_route(coordinates)
+
+    if len(coordinates) < 2:
+        return RealRoute(
+            distance_km=0, duration_min=0, geometry=[], success=False,
+            error="Mínimo 2 coordenadas necessárias"
+        )
+
+    # Try full route first (works for short routes)
+    full_route = get_real_route(coordinates)
+    if full_route.success:
+        return full_route
+
+    # Fallback: segment into consecutive pairs
+    print(f"[ORS] Full route failed, segmenting into {len(coordinates) - 1} pairs...")
+    all_geometry = []
+    total_distance = 0.0
+    total_duration = 0.0
+
+    for i in range(len(coordinates) - 1):
+        pair = [coordinates[i], coordinates[i + 1]]
+        segment = get_real_route(pair)
+
+        if not segment.success:
+            print(f"[ORS] Segment {i} failed: {segment.error}")
+            return RealRoute(
+                distance_km=total_distance, duration_min=total_duration,
+                geometry=all_geometry, success=False,
+                error=f"Segment {i} failed: {segment.error}"
+            )
+
+        # Avoid duplicate points at segment boundaries
+        if all_geometry and segment.geometry:
+            all_geometry.extend(segment.geometry[1:])
+        else:
+            all_geometry.extend(segment.geometry)
+
+        total_distance += segment.distance_km
+        total_duration += segment.duration_min
+
+    print(f"[ORS] Segmented route: {total_distance:.2f} km, {total_duration:.1f} min, {len(all_geometry)} geometry points")
+
+    return RealRoute(
+        distance_km=total_distance,
+        duration_min=total_duration,
+        geometry=all_geometry,
+        success=True
+    )
 
 
 # ============================================================================
