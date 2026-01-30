@@ -32,6 +32,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -61,6 +69,7 @@ export function ConfigPanel() {
   const { t } = useTranslation()
 
   const [addCityOpen, setAddCityOpen] = useState(false)
+  const [compareDialogOpen, setCompareDialogOpen] = useState(false)
 
   const currentLimit = config.algorithmType === "quantum"
     ? ALGORITHM_LIMITS[config.quantumMethod]
@@ -80,7 +89,7 @@ export function ConfigPanel() {
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-            <Route className="w-4 h-4 text-coral" />
+            <Route className="w-4 h-4 text-ibmec-gold" />
             {t("config.routeScope")}
           </h3>
         </div>
@@ -94,7 +103,7 @@ export function ConfigPanel() {
             className={cn(
               "px-3 py-2.5 rounded-lg text-xs font-medium transition-all border",
               config.mode === "intercities"
-                ? "bg-coral/20 border-coral/50 text-coral"
+                ? "bg-ibmec-gold/20 border-ibmec-gold/50 text-ibmec-gold"
                 : "bg-secondary/50 border-border text-muted-foreground hover:border-muted-foreground"
             )}
           >
@@ -108,7 +117,7 @@ export function ConfigPanel() {
             className={cn(
               "px-3 py-2.5 rounded-lg text-xs font-medium transition-all border",
               config.mode === "intracidade"
-                ? "bg-coral/20 border-coral/50 text-coral"
+                ? "bg-ibmec-gold/20 border-ibmec-gold/50 text-ibmec-gold"
                 : "bg-secondary/50 border-border text-muted-foreground hover:border-muted-foreground"
             )}
           >
@@ -129,7 +138,7 @@ export function ConfigPanel() {
               <SelectTrigger className="bg-secondary/50 border-border">
                 <SelectValue placeholder={t("config.selectCity")} />
               </SelectTrigger>
-              <SelectContent className="max-h-60">
+              <SelectContent position="popper" className="max-h-60" sideOffset={4}>
                 {BRAZIL_CAPITALS.map((city) => (
                   <SelectItem key={city.key} value={city.key}>
                     {city.name} ({city.state})
@@ -139,71 +148,13 @@ export function ConfigPanel() {
             </Select>
           </div>
         )}
-
-        {/* Num points slider */}
-        {config.mode === "intracidade" && config.selectedCity && (
-          <div className="mt-3 flex items-center justify-between">
-            <Label className="text-xs text-muted-foreground">{t("config.numNeighborhoods")}</Label>
-            <Select
-              value={String(config.numPoints)}
-              onValueChange={(v) => updateConfig({ numPoints: Number(v) })}
-            >
-              <SelectTrigger className="w-20 bg-secondary/50 border-border h-8 text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {[3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                  <SelectItem key={n} value={String(n)}>{n}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-
-        {config.mode === "intercities" && (
-          <div className="mt-3 flex items-center justify-between">
-            <Label className="text-xs text-muted-foreground">{t("config.waypoints")}</Label>
-            <Select
-              value={String(config.numPoints)}
-              onValueChange={(v) => updateConfig({ numPoints: Number(v) })}
-            >
-              <SelectTrigger className="w-20 bg-secondary/50 border-border h-8 text-xs">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {[3, 4, 5, 6, 7, 8, 10, 12, 15, 20, 27].map((n) => (
-                  <SelectItem key={n} value={String(n)}>{n}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-
-        {/* Generate Points button */}
-        <Button
-          className="w-full mt-3 bg-gradient-to-r from-quantum/80 to-quantum hover:from-quantum hover:to-quantum/80 text-primary-foreground font-medium"
-          onClick={loadPoints}
-          disabled={!canGenerate || isLoadingPoints}
-        >
-          {isLoadingPoints ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              {t("config.loadingPoints")}
-            </>
-          ) : (
-            <>
-              <Play className="w-4 h-4 mr-2" />
-              {t("config.generatePoints")}
-            </>
-          )}
-        </Button>
       </div>
 
       {/* Section: Algorithm */}
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-            <Cpu className="w-4 h-4 text-quantum" />
+            <Cpu className="w-4 h-4 text-ibmec-blue" />
             {t("config.algorithm")}
           </h3>
           <TooltipProvider>
@@ -225,7 +176,7 @@ export function ConfigPanel() {
               className={cn(
                 "flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-medium transition-all border",
                 config.algorithmType === "classical"
-                  ? "bg-neon/20 border-neon/50 text-neon"
+                  ? "bg-success/20 border-success/50 text-success"
                   : "bg-secondary/50 border-border text-muted-foreground hover:border-muted-foreground"
               )}
             >
@@ -237,7 +188,7 @@ export function ConfigPanel() {
               className={cn(
                 "flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-medium transition-all border",
                 config.algorithmType === "quantum"
-                  ? "bg-quantum/20 border-quantum/50 text-quantum"
+                  ? "bg-ibmec-blue/20 border-ibmec-blue/50 text-ibmec-blue"
                   : "bg-secondary/50 border-border text-muted-foreground hover:border-muted-foreground"
               )}
             >
@@ -254,7 +205,7 @@ export function ConfigPanel() {
               <SelectTrigger className="bg-secondary/50 border-border">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent position="popper" sideOffset={4}>
                 <SelectItem value="brute_force">
                   {t("algo.brute_force")} (max 8)
                 </SelectItem>
@@ -274,7 +225,7 @@ export function ConfigPanel() {
               <SelectTrigger className="bg-secondary/50 border-border">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent position="popper" sideOffset={4}>
                 <SelectItem value="quantum_numpy">
                   {t("algo.quantum_numpy")}
                 </SelectItem>
@@ -287,7 +238,7 @@ export function ConfigPanel() {
         </div>
       </div>
 
-      {/* Section: Options */}
+      {/* Section: Real Roads */}
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -307,19 +258,75 @@ export function ConfigPanel() {
         </p>
       </div>
 
+      {/* Section: Points & Generate */}
+      <div className="p-4 border-b border-border">
+        {config.mode === "intracidade" && config.selectedCity && (
+          <div className="flex items-center justify-between mb-3">
+            <Label className="text-xs text-muted-foreground">{t("config.numNeighborhoods")}</Label>
+            <Select
+              value={String(Math.min(config.numPoints, currentLimit))}
+              onValueChange={(v) => updateConfig({ numPoints: Number(v) })}
+            >
+              <SelectTrigger className="w-20 bg-secondary/50 border-border h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper" sideOffset={4}>
+                {[3, 4, 5, 6, 7, 8, 9, 10].filter((n) => n <= currentLimit).map((n) => (
+                  <SelectItem key={n} value={String(n)}>{n}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        {config.mode === "intercities" && (
+          <div className="flex items-center justify-between mb-3">
+            <Label className="text-xs text-muted-foreground">{t("config.waypoints")}</Label>
+            <Select
+              value={String(Math.min(config.numPoints, currentLimit))}
+              onValueChange={(v) => updateConfig({ numPoints: Number(v) })}
+            >
+              <SelectTrigger className="w-20 bg-secondary/50 border-border h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent position="popper" sideOffset={4}>
+                {[3, 4, 5, 6, 7, 8, 10, 12, 15, 20, 27].filter((n) => n <= currentLimit).map((n) => (
+                  <SelectItem key={n} value={String(n)}>{n}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        <Button
+          className="w-full bg-gradient-to-r from-ibmec-blue/80 to-ibmec-blue hover:from-ibmec-blue hover:to-ibmec-blue/80 text-white font-medium"
+          onClick={loadPoints}
+          disabled={!canGenerate || isLoadingPoints}
+        >
+          {isLoadingPoints ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              {t("config.loadingPoints")}
+            </>
+          ) : (
+            <>
+              <Play className="w-4 h-4 mr-2" />
+              {t("config.generatePoints")}
+            </>
+          )}
+        </Button>
+      </div>
+
       {/* Section: Waypoints list */}
       {selectedCities.length > 0 && (
         <div className="flex-1 flex flex-col min-h-0">
           <div className="p-4 pb-2">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-coral" />
+                <MapPin className="w-4 h-4 text-ibmec-gold" />
                 {t("config.waypoints")}
-                <span className={cn(
-                  "text-xs font-mono px-1.5 py-0.5 rounded",
-                  isOverLimit ? "bg-error/20 text-error" : "bg-secondary text-muted-foreground"
-                )}>
-                  {selectedCities.length}/{currentLimit}
+                <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-secondary text-muted-foreground">
+                  {selectedCities.length}
                 </span>
               </h3>
               <div className="flex items-center gap-1">
@@ -389,7 +396,7 @@ export function ConfigPanel() {
                     className={cn(
                       "flex items-center gap-2 p-2.5 rounded-lg border transition-colors cursor-grab active:cursor-grabbing",
                       city.isHub
-                        ? "bg-coral/10 border-coral/30"
+                        ? "bg-ibmec-gold/10 border-ibmec-gold/30"
                         : "bg-secondary/50 border-border hover:border-muted-foreground"
                     )}
                   >
@@ -397,8 +404,8 @@ export function ConfigPanel() {
                     <div className={cn(
                       "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0",
                       city.isHub
-                        ? "bg-coral text-primary-foreground"
-                        : "bg-quantum text-primary-foreground"
+                        ? "bg-ibmec-gold text-ibmec-blue"
+                        : "bg-ibmec-blue text-white"
                     )}>
                       {city.isHub ? "H" : index + 1}
                     </div>
@@ -439,7 +446,7 @@ export function ConfigPanel() {
       {/* Action buttons */}
       <div className="p-4 border-t border-border space-y-2">
         <Button
-          className="w-full bg-gradient-to-r from-coral to-coral-light hover:from-coral-light hover:to-coral text-primary-foreground font-semibold"
+          className="w-full bg-gradient-to-r from-ibmec-gold to-ibmec-gold-light hover:from-ibmec-gold-light hover:to-ibmec-gold text-ibmec-blue font-semibold"
           onClick={calculateRoute}
           disabled={isCalculating || selectedCities.length < 2 || isOverLimit}
         >
@@ -462,14 +469,40 @@ export function ConfigPanel() {
 
         <Button
           variant="outline"
-          className="w-full border-quantum/50 text-quantum hover:bg-quantum/10 bg-transparent"
-          onClick={calculateComparison}
-          disabled={isCalculating || selectedCities.length < 2 || selectedCities.length > 4}
+          className="w-full border-ibmec-blue/50 text-ibmec-blue hover:bg-ibmec-blue/10 bg-transparent"
+          onClick={() => {
+            if (selectedCities.length > ALGORITHM_LIMITS.quantum_numpy) {
+              setCompareDialogOpen(true)
+            } else {
+              calculateComparison()
+            }
+          }}
+          disabled={isCalculating || selectedCities.length < 2}
         >
           <Cpu className="w-4 h-4 mr-2" />
           {t("config.compareQuantumClassical")}
         </Button>
       </div>
+
+      {/* Comparison unavailable dialog */}
+      <Dialog open={compareDialogOpen} onOpenChange={setCompareDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Info className="w-5 h-5 text-ibmec-blue" />
+              {t("config.compareUnavailableTitle")}
+            </DialogTitle>
+            <DialogDescription className="text-left pt-2">
+              {t("config.compareUnavailableDesc", { count: selectedCities.length })}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCompareDialogOpen(false)}>
+              {t("config.understood")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

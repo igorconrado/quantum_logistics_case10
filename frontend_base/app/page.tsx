@@ -50,7 +50,7 @@ function DashboardContent() {
             <Button
               variant="ghost"
               size="sm"
-              className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-card/90 backdrop-blur-sm border border-border hover:border-neon/50"
+              className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-card/90 backdrop-blur-sm border border-border hover:border-success/50"
               onClick={() => setShowMatrix(!showMatrix)}
             >
               <Grid3X3 className="w-4 h-4 mr-2" />

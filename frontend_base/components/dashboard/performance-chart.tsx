@@ -60,8 +60,8 @@ export function PerformanceChart() {
               labelStyle={{ color: "var(--foreground)" }}
             />
             <Legend wrapperStyle={{ fontSize: 10 }} />
-            <Line type="monotone" dataKey="time" name={t("chart.time")} stroke="var(--quantum)" strokeWidth={2} dot={{ fill: "var(--quantum)", strokeWidth: 0, r: 3 }} />
-            <Line type="monotone" dataKey="distance" name={t("chart.distance")} stroke="var(--neon)" strokeWidth={2} dot={{ fill: "var(--neon)", strokeWidth: 0, r: 3 }} />
+            <Line type="monotone" dataKey="time" name={t("chart.time")} stroke="var(--ibmec-blue)" strokeWidth={2} dot={{ fill: "var(--ibmec-blue)", strokeWidth: 0, r: 3 }} />
+            <Line type="monotone" dataKey="distance" name={t("chart.distance")} stroke="var(--success)" strokeWidth={2} dot={{ fill: "var(--success)", strokeWidth: 0, r: 3 }} />
           </LineChart>
         </ResponsiveContainer>
       </div>
