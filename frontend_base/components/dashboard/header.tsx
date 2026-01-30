@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/tooltip"
 import { useRoute } from "@/lib/route-context"
 import { useTranslation } from "@/lib/i18n"
+import { ThemeToggleSimple } from "@/components/theme-toggle"
 
 export function DashboardHeader() {
   const { apiStatus, isCalculating } = useRoute()
@@ -27,12 +28,15 @@ export function DashboardHeader() {
           transition={{ duration: 0.5 }}
         >
           <div className="relative">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-coral to-coral-light flex items-center justify-center">
-              <Cpu className="w-5 h-5 text-primary-foreground" />
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/icon.svg"
+              alt="Quantum Logistics"
+              className="w-10 h-10 rounded-xl"
+            />
             {isCalculating && (
               <motion.div
-                className="absolute -inset-1 rounded-xl bg-coral/30"
+                className="absolute -inset-1 rounded-xl bg-ibmec-gold/30"
                 animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.2, 0.5] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               />
@@ -63,7 +67,7 @@ export function DashboardHeader() {
               <TooltipTrigger asChild>
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary/50 border border-border">
                   {apiStatus.online ? (
-                    <Wifi className="w-3.5 h-3.5 text-neon" />
+                    <Wifi className="w-3.5 h-3.5 text-success" />
                   ) : (
                     <WifiOff className="w-3.5 h-3.5 text-muted-foreground" />
                   )}
@@ -80,12 +84,12 @@ export function DashboardHeader() {
 
           {isCalculating && (
             <motion.div
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-quantum/10 border border-quantum/30"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-ibmec-blue/10 border border-ibmec-blue/30"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <Activity className="w-3.5 h-3.5 text-quantum animate-pulse" />
-              <span className="text-xs font-medium text-quantum">
+              <Activity className="w-3.5 h-3.5 text-ibmec-blue animate-pulse" />
+              <span className="text-xs font-medium text-ibmec-blue">
                 {t("header.processing")}
               </span>
             </motion.div>
@@ -155,9 +159,20 @@ export function DashboardHeader() {
           </Tooltip>
         </TooltipProvider>
 
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <ThemeToggleSimple />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("header.theme")}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
         <div className="h-6 w-px bg-border mx-1" />
 
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-coral/10 to-neon/10 border border-coral/20">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-ibmec-gold/10 to-ibmec-blue/10 border border-ibmec-gold/20">
           <span className="text-xs text-muted-foreground">Case 10</span>
           <span className="text-xs font-semibold text-foreground">KPMG/TDC</span>
         </div>

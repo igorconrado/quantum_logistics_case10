@@ -8,6 +8,8 @@ import {
   Fuel,
   Zap,
   TrendingDown,
+  TrendingUp,
+  Equal,
   Download,
   Printer,
   ChevronRight,
@@ -66,8 +68,8 @@ export function ResultsPanel() {
                 <div className="p-3 rounded-lg bg-secondary/50 border border-border">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", config.algorithmType === "quantum" ? "bg-quantum/20" : "bg-neon/20")}>
-                        {config.algorithmType === "quantum" ? <Zap className="w-4 h-4 text-quantum" /> : <Cpu className="w-4 h-4 text-neon" />}
+                      <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", config.algorithmType === "quantum" ? "bg-ibmec-blue/20" : "bg-success/20")}>
+                        {config.algorithmType === "quantum" ? <Zap className="w-4 h-4 text-ibmec-blue" /> : <Cpu className="w-4 h-4 text-success" />}
                       </div>
                       <div>
                         <p className="text-xs text-muted-foreground">{t("results.method")}</p>
@@ -105,8 +107,8 @@ export function ResultsPanel() {
                         <div className={cn(
                           "w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold",
                           index === 0 || index === results.sequence!.length - 1
-                            ? "bg-coral text-primary-foreground"
-                            : "bg-quantum/50 text-quantum-light"
+                            ? "bg-ibmec-gold text-primary-foreground"
+                            : "bg-ibmec-blue/50 text-ibmec-blue-light"
                         )}>
                           {index + 1}
                         </div>
@@ -170,7 +172,7 @@ export function ResultsPanel() {
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs text-muted-foreground">{item.timestamp.toLocaleTimeString()}</span>
-                    <span className={cn("text-xs px-2 py-0.5 rounded", item.config.algorithmType === "quantum" ? "bg-quantum/20 text-quantum" : "bg-neon/20 text-neon")}>
+                    <span className={cn("text-xs px-2 py-0.5 rounded", item.config.algorithmType === "quantum" ? "bg-ibmec-blue/20 text-ibmec-blue" : "bg-success/20 text-success")}>
                       {item.config.algorithmType}
                     </span>
                   </div>
@@ -220,9 +222,9 @@ function MetricCard({
   color: "neon" | "coral" | "quantum" | "muted"
 }) {
   const colorClasses = {
-    neon: "bg-neon/10 text-neon border-neon/30",
-    coral: "bg-coral/10 text-coral border-coral/30",
-    quantum: "bg-quantum/10 text-quantum border-quantum/30",
+    neon: "bg-success/10 text-success border-success/30",
+    coral: "bg-ibmec-gold/10 text-ibmec-gold border-ibmec-gold/30",
+    quantum: "bg-ibmec-blue/10 text-ibmec-blue border-ibmec-blue/30",
     muted: "bg-secondary text-muted-foreground border-border",
   }
 
@@ -242,33 +244,54 @@ function MetricCard({
 
 function ComparisonCard({ comparison }: { comparison: any }) {
   const { t } = useTranslation()
-  const speedup = comparison.speedup?.toFixed(1) || "N/A"
+  const rawSpeedup = comparison.speedup || 1
   const distDiff = comparison.distanceDiff || 0
 
+  // Determine comparison result
+  const isQuantumFaster = rawSpeedup > 1.05
+  const isClassicalFaster = rawSpeedup < 0.95
+  const isSameSpeed = !isQuantumFaster && !isClassicalFaster
+
+  // Calculate display speedup value
+  const displaySpeedup = isQuantumFaster
+    ? rawSpeedup.toFixed(1)
+    : isClassicalFaster
+      ? (1 / rawSpeedup).toFixed(1)
+      : "1.0"
+
+  // Select icon and message based on comparison
+  const ComparisonIcon = isQuantumFaster ? TrendingDown : isClassicalFaster ? TrendingUp : Equal
+  const iconColor = isQuantumFaster ? "text-ibmec-blue" : isClassicalFaster ? "text-success" : "text-muted-foreground"
+  const messageKey = isQuantumFaster
+    ? "results.quantumFaster"
+    : isClassicalFaster
+      ? "results.quantumSlower"
+      : "results.sameSpeed"
+
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-4 rounded-xl bg-gradient-to-br from-quantum/10 to-neon/10 border border-quantum/30">
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-4 rounded-xl bg-gradient-to-br from-ibmec-blue/10 to-success/10 border border-ibmec-blue/30">
       <h4 className="text-xs font-semibold text-foreground mb-3 flex items-center gap-2">
-        <Zap className="w-4 h-4 text-quantum" />
+        <Zap className="w-4 h-4 text-ibmec-blue" />
         {t("results.algorithmComparison")}
       </h4>
       <div className="grid grid-cols-2 gap-4 mb-3">
         <div className="text-center">
           <p className="text-xs text-muted-foreground mb-1">{t("config.classical")}</p>
-          <p className="text-lg font-bold font-mono text-neon">
+          <p className="text-lg font-bold font-mono text-success">
             {comparison.classical?.timeMs.toFixed(2)}<span className="text-xs ml-1">ms</span>
           </p>
         </div>
         <div className="text-center">
           <p className="text-xs text-muted-foreground mb-1">{t("config.quantum")}</p>
-          <p className="text-lg font-bold font-mono text-quantum">
+          <p className="text-lg font-bold font-mono text-ibmec-blue">
             {comparison.quantum?.timeMs.toFixed(3)}<span className="text-xs ml-1">ms</span>
           </p>
         </div>
       </div>
       <div className="flex items-center justify-center gap-2 p-2 rounded-lg bg-background/50">
-        <TrendingDown className="w-4 h-4 text-neon" />
+        <ComparisonIcon className={cn("w-4 h-4", iconColor)} />
         <span className="text-sm font-medium text-foreground">
-          {t("results.quantumFaster", { speedup })}
+          {isSameSpeed ? t(messageKey) : t(messageKey, { speedup: displaySpeedup })}
         </span>
       </div>
       {distDiff !== 0 && (

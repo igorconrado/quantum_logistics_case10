@@ -40,17 +40,17 @@ export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
                 {isActive && (
                   <motion.div
                     layoutId="mobile-nav-indicator"
-                    className="absolute inset-0 bg-gradient-to-br from-coral/20 to-neon/10 rounded-xl border border-coral/30"
+                    className="absolute inset-0 bg-gradient-to-br from-ibmec-gold/20 to-success/10 rounded-xl border border-ibmec-gold/30"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
                 <Icon className={cn(
                   "relative z-10 w-5 h-5 transition-colors",
-                  isActive && "text-coral"
+                  isActive && "text-ibmec-gold"
                 )} />
                 <span className={cn(
                   "relative z-10 text-[10px] font-medium",
-                  isActive && "text-coral"
+                  isActive && "text-ibmec-gold"
                 )}>
                   {t(tab.labelKey)}
                 </span>

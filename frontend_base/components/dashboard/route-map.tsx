@@ -118,7 +118,7 @@ export function RouteMap() {
             <Polyline
               positions={routeCoordinates}
               pathOptions={{
-                color: "#00e5cc",
+                color: "#25D366",
                 weight: 3,
                 opacity: 0.8,
                 dashArray: config.useRealRoads && results?.routeGeometry ? undefined : "10, 10",
@@ -133,7 +133,7 @@ export function RouteMap() {
               radius={city.isHub ? 14 : 10}
               pane="markersPane"
               pathOptions={{
-                fillColor: city.isHub ? "#ff6b35" : "#6366f1",
+                fillColor: city.isHub ? "#EAAA00" : "#002A54",
                 fillOpacity: 1,
                 color: "#ffffff",
                 weight: 2,
@@ -149,7 +149,7 @@ export function RouteMap() {
                   <p className="font-semibold">{city.name}</p>
                   <p className="text-muted-foreground text-xs">{city.state}</p>
                   {city.isHub && (
-                    <span className="inline-block mt-1 px-2 py-0.5 bg-coral/20 text-coral text-xs rounded">
+                    <span className="inline-block mt-1 px-2 py-0.5 bg-ibmec-gold/20 text-ibmec-gold text-xs rounded">
                       {t("map.hub")}
                     </span>
                   )}
@@ -176,13 +176,13 @@ export function RouteMap() {
           >
             <div className="relative mb-6">
               <motion.div
-                className="w-20 h-20 rounded-full border-4 border-coral/30"
-                style={{ borderTopColor: "var(--coral)" }}
+                className="w-20 h-20 rounded-full border-4 border-ibmec-gold/30"
+                style={{ borderTopColor: "var(--ibmec-gold)" }}
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               />
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xl font-bold text-coral font-mono">
+                <span className="text-xl font-bold text-ibmec-gold font-mono">
                   {Math.round(calculationProgress)}%
                 </span>
               </div>
@@ -201,16 +201,16 @@ export function RouteMap() {
 
       {/* Map controls */}
       <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
-        <Button variant="secondary" size="icon" onClick={handleZoomIn} className="bg-card/90 backdrop-blur-sm border border-border hover:border-neon/50">
+        <Button variant="secondary" size="icon" onClick={handleZoomIn} className="bg-card/90 backdrop-blur-sm border border-border hover:border-success/50">
           <ZoomIn className="w-4 h-4" />
         </Button>
-        <Button variant="secondary" size="icon" onClick={handleZoomOut} className="bg-card/90 backdrop-blur-sm border border-border hover:border-neon/50">
+        <Button variant="secondary" size="icon" onClick={handleZoomOut} className="bg-card/90 backdrop-blur-sm border border-border hover:border-success/50">
           <ZoomOut className="w-4 h-4" />
         </Button>
-        <Button variant="secondary" size="icon" onClick={handleFitBounds} className="bg-card/90 backdrop-blur-sm border border-border hover:border-neon/50">
+        <Button variant="secondary" size="icon" onClick={handleFitBounds} className="bg-card/90 backdrop-blur-sm border border-border hover:border-success/50">
           <Maximize2 className="w-4 h-4" />
         </Button>
-        <Button variant="secondary" size="icon" onClick={() => setMapStyle(mapStyle === "default" ? "satellite" : "default")} className="bg-card/90 backdrop-blur-sm border border-border hover:border-neon/50">
+        <Button variant="secondary" size="icon" onClick={() => setMapStyle(mapStyle === "default" ? "satellite" : "default")} className="bg-card/90 backdrop-blur-sm border border-border hover:border-success/50">
           <Layers className="w-4 h-4" />
         </Button>
       </div>
@@ -219,15 +219,15 @@ export function RouteMap() {
       <div className="absolute bottom-4 left-4 bg-card/90 backdrop-blur-sm rounded-lg p-3 border border-border z-10">
         <div className="flex flex-col gap-2 text-xs">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-coral" />
+            <div className="w-3 h-3 rounded-full bg-ibmec-gold" />
             <span className="text-muted-foreground">{t("map.hubStartEnd")}</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-quantum" />
+            <div className="w-3 h-3 rounded-full bg-ibmec-blue" />
             <span className="text-muted-foreground">{t("map.waypointsLabel")}</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-0.5 bg-neon" />
+            <div className="w-6 h-0.5 bg-success" />
             <span className="text-muted-foreground">
               {config.useRealRoads ? t("map.realRoad") : t("map.haversineLabel")}
             </span>
@@ -240,9 +240,9 @@ export function RouteMap() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="absolute top-4 left-4 bg-neon/20 border border-neon/40 rounded-lg px-3 py-1.5 z-10"
+          className="absolute top-4 left-4 bg-success/20 border border-success/40 rounded-lg px-3 py-1.5 z-10"
         >
-          <span className="text-xs font-medium text-neon">{t("map.routeOptimized")}</span>
+          <span className="text-xs font-medium text-success">{t("map.routeOptimized")}</span>
         </motion.div>
       )}
     </div>

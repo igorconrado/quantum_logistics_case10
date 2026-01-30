@@ -30,10 +30,10 @@ export function DistanceMatrix() {
   const getHeatColor = (distance: number) => {
     if (distance === 0) return "bg-secondary"
     const normalized = (distance - minDistance) / (maxDistance - minDistance)
-    if (normalized < 0.25) return "bg-neon/30 text-neon"
-    if (normalized < 0.5) return "bg-neon/50 text-neon"
-    if (normalized < 0.75) return "bg-coral/50 text-coral"
-    return "bg-coral/70 text-coral"
+    if (normalized < 0.25) return "bg-success/30 text-success"
+    if (normalized < 0.5) return "bg-success/50 text-success"
+    if (normalized < 0.75) return "bg-ibmec-gold/50 text-ibmec-gold"
+    return "bg-ibmec-gold/70 text-ibmec-gold"
   }
 
   return (
@@ -69,13 +69,13 @@ export function DistanceMatrix() {
       </div>
       <div className="flex items-center justify-center gap-3 mt-4">
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded bg-neon/30" />
+          <div className="w-3 h-3 rounded bg-success/30" />
           <span className="text-[10px] text-muted-foreground">{t("matrix.near")}</span>
         </div>
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-neon/50" /></div>
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-coral/50" /></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-success/50" /></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-ibmec-gold/50" /></div>
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded bg-coral/70" />
+          <div className="w-3 h-3 rounded bg-ibmec-gold/70" />
           <span className="text-[10px] text-muted-foreground">{t("matrix.far")}</span>
         </div>
       </div>

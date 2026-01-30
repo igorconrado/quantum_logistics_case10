@@ -23,6 +23,7 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     "header.processing": "Processando...",
     "header.help": "Ajuda e Documentação",
     "header.settings": "Configurações",
+    "header.theme": "Alternar tema",
 
     // Config Panel
     "config.routeScope": "Escopo da Rota",
@@ -40,6 +41,9 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     "config.calculating": "Calculando...",
     "config.calculateRoute": "Calcular Rota",
     "config.compareQuantumClassical": "Comparar Quântico vs Clássico",
+    "config.compareUnavailableTitle": "Comparação Indisponível",
+    "config.compareUnavailableDesc": "A comparação direta entre algoritmo quântico e clássico não é possível com {count} pontos. O simulador quântico consome memória RAM exponencialmente com o número de qubits, e essa quantidade de pontos excede a capacidade disponível. Reduza para no máximo 4 pontos para utilizar a comparação.",
+    "config.understood": "Entendi",
     "config.selectCity": "Selecione uma cidade",
     "config.generatePoints": "Gerar Pontos",
     "config.loadingPoints": "Carregando pontos...",
@@ -77,6 +81,8 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     "results.noHistoryDesc": "Seu histórico de cálculos aparecerá aqui",
     "results.algorithmComparison": "Comparação de Algoritmos",
     "results.quantumFaster": "Quântico é {speedup}x mais rápido",
+    "results.quantumSlower": "Clássico é {speedup}x mais rápido",
+    "results.sameSpeed": "Mesma velocidade",
     "results.distanceDiff": "Diferença de distância:",
 
     // CSV export
@@ -134,6 +140,7 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     "header.processing": "Processing...",
     "header.help": "Help & Documentation",
     "header.settings": "Settings",
+    "header.theme": "Toggle theme",
 
     // Config Panel
     "config.routeScope": "Route Scope",
@@ -151,6 +158,9 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     "config.calculating": "Calculating...",
     "config.calculateRoute": "Calculate Route",
     "config.compareQuantumClassical": "Compare Quantum vs Classical",
+    "config.compareUnavailableTitle": "Comparison Unavailable",
+    "config.compareUnavailableDesc": "Direct comparison between quantum and classical algorithms is not possible with {count} points. The quantum simulator consumes RAM exponentially with the number of qubits, and this number of points exceeds available memory. Reduce to a maximum of 4 points to use the comparison.",
+    "config.understood": "Got it",
     "config.selectCity": "Select a city",
     "config.generatePoints": "Generate Points",
     "config.loadingPoints": "Loading points...",
@@ -188,6 +198,8 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     "results.noHistoryDesc": "Your calculation history will appear here",
     "results.algorithmComparison": "Algorithm Comparison",
     "results.quantumFaster": "Quantum is {speedup}x faster",
+    "results.quantumSlower": "Classical is {speedup}x faster",
+    "results.sameSpeed": "Same speed",
     "results.distanceDiff": "Distance diff:",
 
     // CSV export

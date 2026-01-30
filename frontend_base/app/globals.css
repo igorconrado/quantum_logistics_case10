@@ -4,60 +4,153 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Quantum Logistics - Futuristic Control Center Theme */
+/* ========================================
+   Quantum Logistics - Ibmec Theme System
+   Light Mode (default) + Dark Mode
+   ======================================== */
+
+/* Light Mode - Ibmec Corporate Theme */
 :root {
-  --background: #0a0a0f;
-  --foreground: #f0f4f8;
-  --card: #12121a;
-  --card-foreground: #f0f4f8;
-  --popover: #16161f;
-  --popover-foreground: #f0f4f8;
-  --primary: #ff6b35;
-  --primary-foreground: #ffffff;
-  --secondary: #1a1a24;
-  --secondary-foreground: #f0f4f8;
-  --muted: #1e1e2a;
-  --muted-foreground: #8b8fa3;
-  --accent: #00e5cc;
-  --accent-foreground: #0a0a0f;
-  --destructive: #ff4757;
+  /* Core colors */
+  --background: #ffffff;
+  --foreground: #262730;
+  --card: #f0f2f6;
+  --card-foreground: #262730;
+  --popover: #ffffff;
+  --popover-foreground: #262730;
+
+  /* Primary - Ibmec Gold */
+  --primary: #EAAA00;
+  --primary-foreground: #002A54;
+
+  /* Secondary - Ibmec Blue */
+  --secondary: #e8eef4;
+  --secondary-foreground: #002A54;
+
+  /* Muted */
+  --muted: #f0f2f6;
+  --muted-foreground: #64748b;
+
+  /* Accent - Ibmec Blue */
+  --accent: #002A54;
+  --accent-foreground: #ffffff;
+
+  /* Status */
+  --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: #2a2a3a;
-  --input: #1a1a24;
-  --ring: #ff6b35;
-  --chart-1: #ff6b35;
-  --chart-2: #00e5cc;
-  --chart-3: #6366f1;
-  --chart-4: #22c55e;
+
+  /* Borders & Inputs */
+  --border: #d1d5db;
+  --input: #f0f2f6;
+  --ring: #EAAA00;
+
+  /* Charts */
+  --chart-1: #EAAA00;
+  --chart-2: #002A54;
+  --chart-3: #25D366;
+  --chart-4: #3b82f6;
   --chart-5: #f59e0b;
+
   --radius: 0.75rem;
-  --sidebar: #0f0f14;
-  --sidebar-foreground: #f0f4f8;
-  --sidebar-primary: #ff6b35;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1a1a24;
-  --sidebar-accent-foreground: #f0f4f8;
-  --sidebar-border: #2a2a3a;
-  --sidebar-ring: #ff6b35;
-  
-  /* Custom Quantum theme colors */
-  --quantum: #6366f1;
-  --quantum-light: #818cf8;
-  --quantum-glow: rgba(99, 102, 241, 0.4);
-  --neon: #00e5cc;
-  --neon-light: #5eead4;
-  --neon-glow: rgba(0, 229, 204, 0.35);
-  --coral: #ff6b35;
-  --coral-light: #ff8f66;
-  --coral-glow: rgba(255, 107, 53, 0.35);
-  --success: #22c55e;
+
+  /* Sidebar - Ibmec Blue */
+  --sidebar: #002A54;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #EAAA00;
+  --sidebar-primary-foreground: #002A54;
+  --sidebar-accent: #003366;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #003d73;
+  --sidebar-ring: #EAAA00;
+
+  /* Custom Ibmec theme colors */
+  --ibmec-blue: #002A54;
+  --ibmec-blue-light: #003d73;
+  --ibmec-blue-glow: rgba(0, 42, 84, 0.2);
+  --ibmec-gold: #EAAA00;
+  --ibmec-gold-light: #f5c642;
+  --ibmec-gold-glow: rgba(234, 170, 0, 0.25);
+  --success: #25D366;
+  --success-light: #4ade80;
+  --success-glow: rgba(37, 211, 102, 0.2);
   --warning: #f59e0b;
-  --error: #ff4757;
-  
+  --error: #dc2626;
+
   /* Gradient stops */
-  --gradient-start: #ff6b35;
-  --gradient-mid: #ff8f66;
-  --gradient-end: #ffa07a;
+  --gradient-start: #002A54;
+  --gradient-mid: #003d73;
+  --gradient-end: #EAAA00;
+}
+
+/* Dark Mode - Ibmec Professional Dark */
+.dark {
+  /* Core colors */
+  --background: #0c1829;
+  --foreground: #f0f4f8;
+  --card: #132238;
+  --card-foreground: #f0f4f8;
+  --popover: #162842;
+  --popover-foreground: #f0f4f8;
+
+  /* Primary - Ibmec Gold */
+  --primary: #EAAA00;
+  --primary-foreground: #0c1829;
+
+  /* Secondary */
+  --secondary: #1e3a5f;
+  --secondary-foreground: #f0f4f8;
+
+  /* Muted */
+  --muted: #1a2d47;
+  --muted-foreground: #94a3b8;
+
+  /* Accent - Ibmec Gold */
+  --accent: #EAAA00;
+  --accent-foreground: #0c1829;
+
+  /* Status */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  /* Borders & Inputs */
+  --border: #2a4365;
+  --input: #1e3a5f;
+  --ring: #EAAA00;
+
+  /* Charts */
+  --chart-1: #EAAA00;
+  --chart-2: #3b82f6;
+  --chart-3: #25D366;
+  --chart-4: #818cf8;
+  --chart-5: #f59e0b;
+
+  /* Sidebar - Darker Blue */
+  --sidebar: #091422;
+  --sidebar-foreground: #f0f4f8;
+  --sidebar-primary: #EAAA00;
+  --sidebar-primary-foreground: #0c1829;
+  --sidebar-accent: #132238;
+  --sidebar-accent-foreground: #f0f4f8;
+  --sidebar-border: #1e3a5f;
+  --sidebar-ring: #EAAA00;
+
+  /* Custom Ibmec theme colors */
+  --ibmec-blue: #3b82f6;
+  --ibmec-blue-light: #60a5fa;
+  --ibmec-blue-glow: rgba(59, 130, 246, 0.3);
+  --ibmec-gold: #EAAA00;
+  --ibmec-gold-light: #f5c642;
+  --ibmec-gold-glow: rgba(234, 170, 0, 0.35);
+  --success: #25D366;
+  --success-light: #4ade80;
+  --success-glow: rgba(37, 211, 102, 0.3);
+  --warning: #f59e0b;
+  --error: #ef4444;
+
+  /* Gradient stops */
+  --gradient-start: #EAAA00;
+  --gradient-mid: #f5c642;
+  --gradient-end: #3b82f6;
 }
 
 @theme inline {
@@ -99,13 +192,13 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --color-quantum: var(--quantum);
-  --color-quantum-light: var(--quantum-light);
-  --color-neon: var(--neon);
-  --color-neon-light: var(--neon-light);
-  --color-coral: var(--coral);
-  --color-coral-light: var(--coral-light);
+  /* Ibmec brand colors */
+  --color-ibmec-blue: var(--ibmec-blue);
+  --color-ibmec-blue-light: var(--ibmec-blue-light);
+  --color-ibmec-gold: var(--ibmec-gold);
+  --color-ibmec-gold-light: var(--ibmec-gold-light);
   --color-success: var(--success);
+  --color-success-light: var(--success-light);
   --color-warning: var(--warning);
   --color-error: var(--error);
 }
@@ -119,17 +212,21 @@
   }
 }
 
-/* Glow effects */
+/* Glow effects - Ibmec Theme */
 .glow-primary {
-  box-shadow: 0 0 20px var(--coral-glow), 0 0 40px var(--coral-glow);
+  box-shadow: 0 0 20px var(--ibmec-gold-glow), 0 0 40px var(--ibmec-gold-glow);
 }
 
-.glow-neon {
-  box-shadow: 0 0 15px var(--neon-glow), 0 0 30px var(--neon-glow);
+.glow-gold {
+  box-shadow: 0 0 15px var(--ibmec-gold-glow), 0 0 30px var(--ibmec-gold-glow);
 }
 
-.glow-quantum {
-  box-shadow: 0 0 15px var(--quantum-glow), 0 0 30px var(--quantum-glow);
+.glow-blue {
+  box-shadow: 0 0 15px var(--ibmec-blue-glow), 0 0 30px var(--ibmec-blue-glow);
+}
+
+.glow-success {
+  box-shadow: 0 0 15px var(--success-glow), 0 0 30px var(--success-glow);
 }
 
 /* Card hover effect */
@@ -137,13 +234,13 @@
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 .card-glow:hover {
-  box-shadow: 0 0 20px rgba(0, 229, 204, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  border-color: rgba(0, 229, 204, 0.3);
+  box-shadow: 0 0 20px var(--ibmec-gold-glow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border-color: var(--ibmec-gold);
 }
 
-/* Gradient text */
+/* Gradient text - Ibmec */
 .gradient-text {
-  background: linear-gradient(135deg, var(--coral) 0%, var(--coral-light) 50%, var(--neon) 100%);
+  background: linear-gradient(135deg, var(--ibmec-blue) 0%, var(--ibmec-blue-light) 50%, var(--ibmec-gold) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -161,7 +258,7 @@
   inset: -1px;
   border-radius: calc(var(--radius) + 1px);
   padding: 1px;
-  background: linear-gradient(135deg, var(--coral) 0%, transparent 50%, var(--neon) 100%);
+  background: linear-gradient(135deg, var(--ibmec-blue) 0%, transparent 50%, var(--ibmec-gold) 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -271,7 +368,7 @@
 }
 .leaflet-control-zoom a:hover {
   background: var(--muted) !important;
-  border-color: var(--neon) !important;
+  border-color: var(--ibmec-gold) !important;
 }
 .leaflet-tooltip {
   background: transparent !important;
@@ -289,4 +386,12 @@
 .leaflet-marker-pane,
 .leaflet-overlay-pane svg circle {
   z-index: 600 !important;
+}
+
+/* Radix Dialog above Leaflet map */
+[data-slot="dialog-overlay"] {
+  z-index: 9998 !important;
+}
+[data-slot="dialog-content"] {
+  z-index: 9999 !important;
 }

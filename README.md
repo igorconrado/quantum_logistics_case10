@@ -30,34 +30,44 @@ Based on **Case 10 from KPMG/TDC Net's Danish Quantum Case Collection**, this pr
 
 | Category | Technologies |
 |----------|-------------|
-| **Language** | Python 3.10+ |
+| **Language** | Python 3.10+, TypeScript |
 | **Quantum Core** | Qiskit, Qiskit Aer, Qiskit Optimization, Qiskit Algorithms |
-| **Frontend/UI** | HTML, CSS, JavaScript, Leaflet (Interactive Maps) |
+| **Frontend** | Next.js 16, React, Tailwind CSS, Shadcn/UI, Framer Motion |
+| **Maps** | React-Leaflet, Leaflet.js |
 | **Backend API** | Flask, Flask-CORS |
 | **Classical Algorithms** | NetworkX, NumPy |
 | **Geospatial** | Haversine distance, OpenRouteService API |
 | **Data Processing** | Pandas, NumPy, Requests |
+| **Theming** | next-themes (Light/Dark mode with Ibmec corporate colors) |
 | **Configuration** | python-dotenv |
 
 ---
 
 ## Screenshots
 
-### Main Interface
-![Initial State](snapshots/01_initial_state.png)
-*Initial screen with interactive map and configuration panels*
+### Light Theme
+![Light Theme](snapshots/01_initial_light.png)
+*Dashboard with Ibmec corporate theme (light mode)*
 
-### Inter-City Route with Real Roads (5 Capitals)
-![Inter-City Real Roads](snapshots/04_intercity_real_roads.png)
-*Route optimization between Brazilian capitals using real road network (8,062 km)*
+### Dark Theme
+![Dark Theme](snapshots/02_initial_dark.png)
+*Professional dark mode interface*
 
-### Intra-City Route with Real Roads (São Paulo)
-![Real Roads Calculation](snapshots/07_real_roads_calculation.png)
-*Route within São Paulo using real streets and highways via OpenRouteService API (34.99 km)*
+### Route with Waypoints
+![Points Generated](snapshots/03_points_generated.png)
+*Waypoints loaded on the interactive map*
 
-### Intra-City Route with Quantum Algorithm
-![Quantum Route](snapshots/06_quantum_route.png)
-*Route calculated with QUBO quantum simulation - dashed line indicates Haversine distance (46.57 km)*
+### Route Calculated (Light Mode)
+![Route Light](snapshots/04_route_calculated_light.png)
+*Optimized route with metrics panel*
+
+### Route Calculated (Dark Mode)
+![Route Dark](snapshots/05_route_calculated_dark.png)
+*Same route in dark theme*
+
+### Algorithm Comparison
+![Comparison](snapshots/06_comparison_dark.png)
+*Classical vs Quantum algorithm comparison*
 
 ---
 
