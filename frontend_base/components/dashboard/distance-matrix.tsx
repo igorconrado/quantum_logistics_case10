@@ -2,6 +2,7 @@
 
 import { useMemo } from "react"
 import { motion } from "framer-motion"
+import { Grid3x3, MapPin } from "lucide-react"
 import { useRoute } from "@/lib/route-context"
 import { useTranslation } from "@/lib/i18n"
 import { generateDistanceMatrix } from "@/lib/types"
@@ -18,9 +19,21 @@ export function DistanceMatrix() {
 
   if (!matrix || selectedCities.length < 2) {
     return (
-      <div className="flex items-center justify-center h-full text-center p-4">
-        <p className="text-xs text-muted-foreground">{t("matrix.emptyState")}</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col items-center justify-center h-full text-center p-6"
+      >
+        <div className="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center mb-3">
+          <Grid3x3 className="w-6 h-6 text-muted-foreground" />
+        </div>
+        <p className="text-sm font-medium text-foreground mb-1">{t("matrix.emptyTitle")}</p>
+        <p className="text-xs text-muted-foreground max-w-[200px]">{t("matrix.emptyState")}</p>
+        <div className="flex items-center gap-2 mt-4 px-3 py-2 rounded-lg bg-ibmec-blue/10 border border-ibmec-blue/30">
+          <MapPin className="w-3.5 h-3.5 text-ibmec-blue" />
+          <span className="text-xs text-ibmec-blue">{t("matrix.emptyHint")}</span>
+        </div>
+      </motion.div>
     )
   }
 
