@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Cpu, Activity, Wifi, WifiOff, Settings, HelpCircle } from "lucide-react"
+import { Activity, Wifi, WifiOff, Settings, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Tooltip,
@@ -12,9 +12,11 @@ import {
 import { useRoute } from "@/lib/route-context"
 import { useTranslation } from "@/lib/i18n"
 import { ThemeToggleSimple } from "@/components/theme-toggle"
+import { HelpModal } from "./help-modal"
+import { cn } from "@/lib/utils"
 
 export function DashboardHeader() {
-  const { apiStatus, isCalculating } = useRoute()
+  const { apiStatus, isCalculating, apiUsage } = useRoute()
   const { locale, setLocale, t } = useTranslation()
 
   return (
@@ -82,6 +84,65 @@ export function DashboardHeader() {
             </Tooltip>
           </TooltipProvider>
 
+          {/* API Usage Indicator */}
+          {apiUsage.used > 0 && (
+            <TooltipProvider>
+              <Tooltip delayDuration={300}>
+                <TooltipTrigger asChild>
+                  <div className={cn(
+                    "flex items-center gap-2 px-3 py-1.5 rounded-lg border",
+                    apiUsage.isExhausted
+                      ? "bg-error/10 border-error/30"
+                      : apiUsage.isLow
+                        ? "bg-warning/10 border-warning/30"
+                        : "bg-secondary/50 border-border"
+                  )}>
+                    {(apiUsage.isLow || apiUsage.isExhausted) && (
+                      <AlertTriangle className={cn(
+                        "w-3.5 h-3.5",
+                        apiUsage.isExhausted ? "text-error" : "text-warning"
+                      )} />
+                    )}
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-16 h-1.5 bg-secondary rounded-full overflow-hidden">
+                        <div
+                          className={cn(
+                            "h-full rounded-full transition-all",
+                            apiUsage.isExhausted
+                              ? "bg-error"
+                              : apiUsage.isLow
+                                ? "bg-warning"
+                                : "bg-success"
+                          )}
+                          style={{ width: `${apiUsage.percentUsed}%` }}
+                        />
+                      </div>
+                      <span className={cn(
+                        "text-xs font-mono",
+                        apiUsage.isExhausted
+                          ? "text-error"
+                          : apiUsage.isLow
+                            ? "text-warning"
+                            : "text-muted-foreground"
+                      )}>
+                        {apiUsage.remaining}
+                      </span>
+                    </div>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {apiUsage.isExhausted
+                      ? t("tooltip.apiExhausted")
+                      : apiUsage.isLow
+                        ? t("tooltip.apiLow")
+                        : t("tooltip.apiUsage", { used: apiUsage.used, limit: apiUsage.limit })}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+
           {isCalculating && (
             <motion.div
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-ibmec-blue/10 border border-ibmec-blue/30"
@@ -133,18 +194,7 @@ export function DashboardHeader() {
           </Tooltip>
         </TooltipProvider>
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-                <HelpCircle className="w-4 h-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{t("header.help")}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <HelpModal />
 
         <TooltipProvider>
           <Tooltip>

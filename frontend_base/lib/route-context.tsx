@@ -18,10 +18,21 @@ import {
   getCityNeighborhoods,
   type BackendLocation,
 } from "./api"
+import { useApiUsage } from "./use-api-usage"
+
+interface ApiUsageInfo {
+  used: number
+  limit: number
+  remaining: number
+  percentUsed: number
+  isLow: boolean
+  isExhausted: boolean
+}
 
 interface RouteContextType {
   selectedCities: City[]
   addCity: (city: City) => void
+  addCustomCity: (lat: number, lng: number, name?: string) => void
   removeCity: (cityId: string) => void
   reorderCities: (startIndex: number, endIndex: number) => void
   availableCities: City[]
@@ -35,6 +46,7 @@ interface RouteContextType {
   history: CalculationHistory[]
   clearHistory: () => void
   apiStatus: ApiStatus
+  apiUsage: ApiUsageInfo
   setApiKey: (key: string) => void
   calculateRoute: () => Promise<void>
   calculateComparison: () => Promise<void>
@@ -93,6 +105,7 @@ export function RouteProvider({ children }: { children: React.ReactNode }) {
   const [history, setHistory] = useState<CalculationHistory[]>([])
   const [apiStatus, setApiStatus] = useState<ApiStatus>({ online: false, hasApiKey: false })
   const [isLoadingPoints, setIsLoadingPoints] = useState(false)
+  const { used, limit, remaining, percentUsed, isLow, isExhausted, incrementUsage } = useApiUsage()
 
   useEffect(() => {
     getRoutingStatus()
@@ -114,6 +127,21 @@ export function RouteProvider({ children }: { children: React.ReactNode }) {
     setResults(null)
     setComparison({ quantum: null, classical: null })
   }, [])
+
+  const addCustomCity = useCallback((lat: number, lng: number, name?: string) => {
+    const customCity: City = {
+      id: `custom_${Date.now()}`,
+      key: "custom",
+      name: name || `Ponto ${selectedCities.length + 1}`,
+      state: "Custom",
+      lat,
+      lng,
+      isHub: selectedCities.length === 0,
+    }
+    setSelectedCities((prev) => [...prev, customCity])
+    setResults(null)
+    setComparison({ quantum: null, classical: null })
+  }, [selectedCities.length])
 
   const removeCity = useCallback((cityId: string) => {
     setSelectedCities((prev) => {
@@ -237,6 +265,13 @@ export function RouteProvider({ children }: { children: React.ReactNode }) {
         use_real_roads: config.useRealRoads,
       })
 
+      // Track API usage when real roads are used
+      if (config.useRealRoads && data.used_real_roads) {
+        // Each calculation uses approximately n*(n-1)/2 API calls for distance matrix
+        const apiCalls = Math.ceil((selectedCities.length * (selectedCities.length - 1)) / 2)
+        incrementUsage(apiCalls)
+      }
+
       const result = parseApiResult(data, selectedCities, config)
       setResults(result)
       addToHistory(result)
@@ -258,7 +293,7 @@ export function RouteProvider({ children }: { children: React.ReactNode }) {
       setCalculationProgress(100)
       setTimeout(() => setIsCalculating(false), 300)
     }
-  }, [selectedCities, config, addToHistory])
+  }, [selectedCities, config, addToHistory, incrementUsage])
 
   const calculateComparison = useCallback(async () => {
     if (selectedCities.length < 2) return
@@ -318,9 +353,12 @@ export function RouteProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  const apiUsage: ApiUsageInfo = { used, limit, remaining, percentUsed, isLow, isExhausted }
+
   const value: RouteContextType = {
     selectedCities,
     addCity,
+    addCustomCity,
     removeCity,
     reorderCities,
     availableCities,
@@ -334,6 +372,7 @@ export function RouteProvider({ children }: { children: React.ReactNode }) {
     history,
     clearHistory,
     apiStatus,
+    apiUsage,
     setApiKey: setApiKeyHandler,
     calculateRoute,
     calculateComparison,
