@@ -94,12 +94,14 @@ export function ConfigPanel() {
           </h3>
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2" role="group" aria-label={t("config.routeScope")}>
           <button
             onClick={() => {
               updateConfig({ mode: "intercities", selectedCity: null })
               setSelectedCities([])
             }}
+            aria-pressed={config.mode === "intercities"}
+            aria-label={t("config.intercities")}
             className={cn(
               "px-3 py-2.5 rounded-lg text-xs font-medium transition-all border",
               config.mode === "intercities"
@@ -114,6 +116,8 @@ export function ConfigPanel() {
               updateConfig({ mode: "intracidade", selectedCity: null })
               setSelectedCities([])
             }}
+            aria-pressed={config.mode === "intracidade"}
+            aria-label={t("config.intracity")}
             className={cn(
               "px-3 py-2.5 rounded-lg text-xs font-medium transition-all border",
               config.mode === "intracidade"
@@ -158,12 +162,15 @@ export function ConfigPanel() {
             {t("config.algorithm")}
           </h3>
           <TooltipProvider>
-            <Tooltip>
+            <Tooltip delayDuration={300}>
               <TooltipTrigger>
-                <Info className="w-3.5 h-3.5 text-muted-foreground" />
+                <Info className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground transition-colors" />
               </TooltipTrigger>
               <TooltipContent className="max-w-xs">
-                <p>{t("config.algorithmTooltip", { quantumLimit: ALGORITHM_LIMITS.quantum_numpy, classicalLimit: ALGORITHM_LIMITS.nearest_neighbor })}</p>
+                <p>{t("tooltip.algorithmInfo")}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t("config.algorithmTooltip", { quantumLimit: ALGORITHM_LIMITS.quantum_numpy, classicalLimit: ALGORITHM_LIMITS.nearest_neighbor })}
+                </p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -173,6 +180,8 @@ export function ConfigPanel() {
           <div className="grid grid-cols-2 gap-2">
             <button
               onClick={() => updateConfig({ algorithmType: "classical" })}
+              aria-pressed={config.algorithmType === "classical"}
+              aria-label={t("config.classical")}
               className={cn(
                 "flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-medium transition-all border",
                 config.algorithmType === "classical"
@@ -180,11 +189,13 @@ export function ConfigPanel() {
                   : "bg-secondary/50 border-border text-muted-foreground hover:border-muted-foreground"
               )}
             >
-              <Cpu className="w-3.5 h-3.5" />
+              <Cpu className="w-3.5 h-3.5" aria-hidden="true" />
               {t("config.classical")}
             </button>
             <button
               onClick={() => updateConfig({ algorithmType: "quantum" })}
+              aria-pressed={config.algorithmType === "quantum"}
+              aria-label={t("config.quantum")}
               className={cn(
                 "flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-medium transition-all border",
                 config.algorithmType === "quantum"
@@ -192,7 +203,7 @@ export function ConfigPanel() {
                   : "bg-secondary/50 border-border text-muted-foreground hover:border-muted-foreground"
               )}
             >
-              <Zap className="w-3.5 h-3.5" />
+              <Zap className="w-3.5 h-3.5" aria-hidden="true" />
               {t("config.quantum")}
             </button>
           </div>
@@ -218,22 +229,35 @@ export function ConfigPanel() {
               </SelectContent>
             </Select>
           ) : (
-            <Select
-              value={config.quantumMethod}
-              onValueChange={(v) => updateConfig({ quantumMethod: v as any })}
-            >
-              <SelectTrigger className="bg-secondary/50 border-border">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent position="popper" sideOffset={4}>
-                <SelectItem value="quantum_numpy">
-                  {t("algo.quantum_numpy")}
-                </SelectItem>
-                <SelectItem value="quantum_qaoa">
-                  {t("algo.quantum_qaoa")}
-                </SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="space-y-2">
+              <Select
+                value={config.quantumMethod}
+                onValueChange={(v) => updateConfig({ quantumMethod: v as any })}
+              >
+                <SelectTrigger className="bg-secondary/50 border-border">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent position="popper" sideOffset={4}>
+                  <SelectItem value="quantum_numpy">
+                    <div className="flex flex-col">
+                      <span>{t("algo.quantum_numpy")}</span>
+                      <span className="text-xs text-muted-foreground">{t("tooltip.quantumNumpyShort")}</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="quantum_qaoa">
+                    <div className="flex flex-col">
+                      <span>{t("algo.quantum_qaoa")}</span>
+                      <span className="text-xs text-muted-foreground">{t("tooltip.quantumQaoaShort")}</span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground px-1">
+                {config.quantumMethod === "quantum_numpy"
+                  ? t("tooltip.quantumNumpy")
+                  : t("tooltip.quantumQaoa")}
+              </p>
+            </div>
           )}
         </div>
       </div>
@@ -246,6 +270,16 @@ export function ConfigPanel() {
             <Label htmlFor="real-roads" className="text-sm text-foreground cursor-pointer">
               {t("config.useRealRoads")}
             </Label>
+            <TooltipProvider>
+              <Tooltip delayDuration={300}>
+                <TooltipTrigger>
+                  <Info className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground transition-colors" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p>{t("tooltip.realRoads")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <Switch
             id="real-roads"
