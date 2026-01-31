@@ -109,6 +109,8 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     "map.realRoad": "Estrada Real",
     "map.haversineLabel": "Haversine",
     "map.routeOptimized": "Rota Otimizada",
+    "map.clickModeOn": "Clique no mapa para adicionar waypoints (ativo)",
+    "map.clickModeOff": "Clique para ativar modo de adicionar waypoints",
 
     // Mobile Nav
     "nav.config": "Config",
@@ -118,7 +120,9 @@ const dictionaries: Record<Locale, Record<string, string>> = {
 
     // Distance Matrix
     "matrix.title": "Matriz de Distâncias (km)",
-    "matrix.emptyState": "Adicione pelo menos 2 cidades para ver a matriz de distâncias",
+    "matrix.emptyTitle": "Matriz de Distâncias",
+    "matrix.emptyState": "Adicione pelo menos 2 cidades para visualizar as distâncias entre os pontos.",
+    "matrix.emptyHint": "Gere pontos ou clique no mapa",
     "matrix.near": "Perto",
     "matrix.far": "Longe",
     "matrix.button": "Matriz de Distâncias",
@@ -128,6 +132,56 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     "chart.emptyState": "Execute pelo menos 2 cálculos para ver as tendências",
     "chart.time": "Tempo (ms)",
     "chart.distance": "Distância (x100 km)",
+
+    // Help Modal
+    "help.title": "Ajuda e Documentação",
+    "help.tabHowTo": "Como Usar",
+    "help.tabAlgorithms": "Algoritmos",
+    "help.tabAbout": "Sobre",
+    "help.howToIntro": "Siga estes passos para otimizar suas rotas de logística:",
+    "help.step1Title": "Selecione o Escopo",
+    "help.step1Desc": "Escolha entre rotas Intercidades (capitais brasileiras) ou Intracidade (bairros de uma cidade específica).",
+    "help.step2Title": "Escolha o Algoritmo",
+    "help.step2Desc": "Selecione entre algoritmos Clássicos (mais rápidos, suportam mais pontos) ou Quânticos (simulação, limitado a 4 pontos).",
+    "help.step3Title": "Gere os Pontos",
+    "help.step3Desc": "Clique em 'Gerar Pontos' para criar waypoints aleatórios ou adicione manualmente pela lista.",
+    "help.step4Title": "Calcule a Rota",
+    "help.step4Desc": "Clique em 'Calcular Rota' para encontrar a sequência otimizada. Use 'Comparar' para ver diferenças entre algoritmos.",
+    "help.tipTitle": "Dica Pro",
+    "help.tipContent": "Ative 'Usar Estradas Reais' para obter distâncias reais via OpenRouteService. O modo Haversine usa linha reta.",
+    "help.algorithmsIntro": "A plataforma oferece algoritmos clássicos e simulações quânticas para resolver o Problema do Caixeiro Viajante (TSP):",
+    "help.classicalTitle": "Algoritmos Clássicos",
+    "help.quantumTitle": "Algoritmos Quânticos",
+    "help.points": "pontos",
+    "help.bruteForceDesc": "Testa todas as permutações possíveis. Garante a solução ótima, mas é exponencialmente lento.",
+    "help.nearestNeighborDesc": "Heurística gulosa que sempre escolhe o vizinho mais próximo. Rápido, mas nem sempre ótimo.",
+    "help.networkxDesc": "Utiliza algoritmos otimizados da biblioteca NetworkX para grafos.",
+    "help.quantumNumpyDesc": "Simulação exata usando NumPy. Resolve o problema via formulação QUBO, mais preciso porém lento.",
+    "help.quantumQaoaDesc": "Quantum Approximate Optimization Algorithm. Algoritmo variacional híbrido para otimização combinatória.",
+    "help.quantumLimitTitle": "Por que o limite de 4 pontos?",
+    "help.quantumLimitDesc": "A simulação quântica consome memória RAM exponencialmente: 4 pontos = ~512KB, 5 pontos = ~256MB, 6+ pontos = impraticável.",
+    "help.aboutSubtitle": "Plataforma de Otimização de Rotas com Computação Quântica",
+    "help.projectTitle": "Sobre o Projeto",
+    "help.projectDesc": "Esta aplicação demonstra o uso de computação quântica para otimização logística, baseada no Case 10 do programa Danish Quantum Use Cases da KPMG/TDC Net.",
+    "help.partnersTitle": "Parceiros",
+    "help.techStackTitle": "Tecnologias",
+
+    // Tooltips
+    "tooltip.algorithmInfo": "Escolha entre algoritmos clássicos de otimização ou simulações de computação quântica",
+    "tooltip.quantumNumpy": "Simulação de algoritmo quântico usando NumPy. Mais preciso, porém mais lento.",
+    "tooltip.quantumNumpyShort": "Simulação exata via QUBO",
+    "tooltip.quantumQaoa": "Quantum Approximate Optimization Algorithm - ideal para problemas combinatórios",
+    "tooltip.quantumQaoaShort": "Algoritmo variacional híbrido",
+    "tooltip.realRoads": "Usa API OpenRouteService para calcular rotas reais. Limite: 2000 requisições/dia",
+    "tooltip.apiUsage": "{used}/{limit} requisições usadas hoje",
+    "tooltip.apiLow": "Poucas requisições restantes!",
+    "tooltip.apiExhausted": "Limite de requisições atingido. Resets à meia-noite UTC.",
+
+    // Validation messages
+    "validation.minPoints": "Adicione pelo menos 2 pontos para calcular a rota",
+    "validation.maxPoints": "Limite máximo de {limit} pontos para o algoritmo selecionado",
+    "validation.apiError": "Erro ao conectar com a API. Tente novamente.",
+    "validation.calculationError": "Erro durante o cálculo. Verifique os pontos selecionados.",
   },
 
   "en-US": {
@@ -226,6 +280,8 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     "map.realRoad": "Real Road",
     "map.haversineLabel": "Haversine",
     "map.routeOptimized": "Route Optimized",
+    "map.clickModeOn": "Click on map to add waypoints (active)",
+    "map.clickModeOff": "Click to enable add waypoints mode",
 
     // Mobile Nav
     "nav.config": "Config",
@@ -235,7 +291,9 @@ const dictionaries: Record<Locale, Record<string, string>> = {
 
     // Distance Matrix
     "matrix.title": "Distance Matrix (km)",
-    "matrix.emptyState": "Add at least 2 cities to see the distance matrix",
+    "matrix.emptyTitle": "Distance Matrix",
+    "matrix.emptyState": "Add at least 2 cities to view distances between points.",
+    "matrix.emptyHint": "Generate points or click on map",
     "matrix.near": "Near",
     "matrix.far": "Far",
     "matrix.button": "Distance Matrix",
@@ -245,6 +303,56 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     "chart.emptyState": "Run at least 2 calculations to see performance trends",
     "chart.time": "Time (ms)",
     "chart.distance": "Distance (x100 km)",
+
+    // Help Modal
+    "help.title": "Help & Documentation",
+    "help.tabHowTo": "How to Use",
+    "help.tabAlgorithms": "Algorithms",
+    "help.tabAbout": "About",
+    "help.howToIntro": "Follow these steps to optimize your logistics routes:",
+    "help.step1Title": "Select Scope",
+    "help.step1Desc": "Choose between Intercities routes (Brazilian capitals) or Intracity (neighborhoods of a specific city).",
+    "help.step2Title": "Choose Algorithm",
+    "help.step2Desc": "Select between Classical algorithms (faster, supports more points) or Quantum (simulation, limited to 4 points).",
+    "help.step3Title": "Generate Points",
+    "help.step3Desc": "Click 'Generate Points' to create random waypoints or add manually from the list.",
+    "help.step4Title": "Calculate Route",
+    "help.step4Desc": "Click 'Calculate Route' to find the optimized sequence. Use 'Compare' to see differences between algorithms.",
+    "help.tipTitle": "Pro Tip",
+    "help.tipContent": "Enable 'Use Real Roads' to get real distances via OpenRouteService. Haversine mode uses straight lines.",
+    "help.algorithmsIntro": "The platform offers classical algorithms and quantum simulations to solve the Traveling Salesman Problem (TSP):",
+    "help.classicalTitle": "Classical Algorithms",
+    "help.quantumTitle": "Quantum Algorithms",
+    "help.points": "points",
+    "help.bruteForceDesc": "Tests all possible permutations. Guarantees optimal solution but is exponentially slow.",
+    "help.nearestNeighborDesc": "Greedy heuristic that always chooses the nearest neighbor. Fast but not always optimal.",
+    "help.networkxDesc": "Uses optimized algorithms from the NetworkX graph library.",
+    "help.quantumNumpyDesc": "Exact simulation using NumPy. Solves the problem via QUBO formulation, more accurate but slow.",
+    "help.quantumQaoaDesc": "Quantum Approximate Optimization Algorithm. Hybrid variational algorithm for combinatorial optimization.",
+    "help.quantumLimitTitle": "Why the 4-point limit?",
+    "help.quantumLimitDesc": "Quantum simulation consumes RAM exponentially: 4 points = ~512KB, 5 points = ~256MB, 6+ points = impractical.",
+    "help.aboutSubtitle": "Route Optimization Platform with Quantum Computing",
+    "help.projectTitle": "About the Project",
+    "help.projectDesc": "This application demonstrates the use of quantum computing for logistics optimization, based on Case 10 of KPMG/TDC Net's Danish Quantum Use Cases program.",
+    "help.partnersTitle": "Partners",
+    "help.techStackTitle": "Technologies",
+
+    // Tooltips
+    "tooltip.algorithmInfo": "Choose between classical optimization algorithms or quantum computing simulations",
+    "tooltip.quantumNumpy": "Quantum algorithm simulation using NumPy. More accurate, but slower.",
+    "tooltip.quantumNumpyShort": "Exact simulation via QUBO",
+    "tooltip.quantumQaoa": "Quantum Approximate Optimization Algorithm - ideal for combinatorial problems",
+    "tooltip.quantumQaoaShort": "Hybrid variational algorithm",
+    "tooltip.realRoads": "Uses OpenRouteService API to calculate real routes. Limit: 2000 requests/day",
+    "tooltip.apiUsage": "{used}/{limit} requests used today",
+    "tooltip.apiLow": "Few requests remaining!",
+    "tooltip.apiExhausted": "Request limit reached. Resets at midnight UTC.",
+
+    // Validation messages
+    "validation.minPoints": "Add at least 2 points to calculate the route",
+    "validation.maxPoints": "Maximum limit of {limit} points for selected algorithm",
+    "validation.apiError": "Error connecting to API. Please try again.",
+    "validation.calculationError": "Error during calculation. Check selected points.",
   },
 }
 
