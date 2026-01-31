@@ -28,9 +28,9 @@ const CircleMarker = dynamic(
   () => import("react-leaflet").then((mod) => mod.CircleMarker),
   { ssr: false }
 )
-const Tooltip = dynamic(
+const LeafletTooltip = dynamic(
   () => import("react-leaflet").then((mod) => mod.Tooltip),
-  { ssr: false }
+  { ssr: false, loading: () => null }
 )
 const Polyline = dynamic(
   () => import("react-leaflet").then((mod) => mod.Polyline),
@@ -184,7 +184,7 @@ export function RouteMap() {
                 weight: 2,
               }}
             >
-              <Tooltip
+              <LeafletTooltip
                 permanent={false}
                 direction="top"
                 offset={[0, -10]}
@@ -204,7 +204,7 @@ export function RouteMap() {
                     </span>
                   )}
                 </div>
-              </Tooltip>
+              </LeafletTooltip>
             </CircleMarker>
           ))}
         </MapContainer>
