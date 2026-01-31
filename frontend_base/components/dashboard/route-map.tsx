@@ -3,11 +3,18 @@
 import { useEffect, useRef, useState } from "react"
 import dynamic from "next/dynamic"
 import { motion, AnimatePresence } from "framer-motion"
-import { Loader2, ZoomIn, ZoomOut, Maximize2, Layers } from "lucide-react"
+import { Loader2, ZoomIn, ZoomOut, Maximize2, Layers, MousePointer2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { useRoute } from "@/lib/route-context"
 import { useTranslation } from "@/lib/i18n"
 import type { City } from "@/lib/types"
+import { ALGORITHM_LIMITS } from "@/lib/types"
 
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
@@ -60,12 +67,49 @@ const MapController = dynamic(() => Promise.resolve(MapControllerInner), {
   ssr: false,
 })
 
+function MapClickHandlerInner({
+  enabled,
+  onMapClick,
+}: {
+  enabled: boolean
+  onMapClick: (lat: number, lng: number) => void
+}) {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { useMapEvents } = require("react-leaflet")
+
+  useMapEvents({
+    click: (e: { latlng: { lat: number; lng: number } }) => {
+      if (enabled) {
+        onMapClick(e.latlng.lat, e.latlng.lng)
+      }
+    },
+  })
+
+  return null
+}
+
+const MapClickHandler = dynamic(() => Promise.resolve(MapClickHandlerInner), {
+  ssr: false,
+})
+
 export function RouteMap() {
-  const { selectedCities, results, isCalculating, calculationProgress, config } = useRoute()
+  const { selectedCities, results, isCalculating, calculationProgress, config, addCustomCity } = useRoute()
   const { t } = useTranslation()
   const [mapReady, setMapReady] = useState(false)
   const [mapStyle, setMapStyle] = useState<"default" | "satellite">("default")
+  const [clickToAddEnabled, setClickToAddEnabled] = useState(false)
   const mapRef = useRef<any>(null)
+
+  const currentLimit = config.algorithmType === "quantum"
+    ? ALGORITHM_LIMITS[config.quantumMethod]
+    : ALGORITHM_LIMITS[config.classicalMethod]
+  const canAddMore = selectedCities.length < currentLimit
+
+  const handleMapClick = (lat: number, lng: number) => {
+    if (canAddMore) {
+      addCustomCity(lat, lng)
+    }
+  }
 
   useEffect(() => {
     setMapReady(true)
@@ -113,6 +157,7 @@ export function RouteMap() {
           />
 
           <MapController selectedCities={selectedCities} />
+          <MapClickHandler enabled={clickToAddEnabled && canAddMore} onMapClick={handleMapClick} />
 
           {routeCoordinates.length > 1 && (
             <Polyline
@@ -201,6 +246,28 @@ export function RouteMap() {
 
       {/* Map controls */}
       <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
+        <TooltipProvider>
+          <Tooltip delayDuration={300}>
+            <TooltipTrigger asChild>
+              <Button
+                variant="secondary"
+                size="icon"
+                onClick={() => setClickToAddEnabled(!clickToAddEnabled)}
+                className={`bg-card/90 backdrop-blur-sm border ${
+                  clickToAddEnabled
+                    ? "border-ibmec-gold bg-ibmec-gold/20 text-ibmec-gold"
+                    : "border-border hover:border-success/50"
+                }`}
+                disabled={!canAddMore && !clickToAddEnabled}
+              >
+                <MousePointer2 className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              <p>{clickToAddEnabled ? t("map.clickModeOn") : t("map.clickModeOff")}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <Button variant="secondary" size="icon" onClick={handleZoomIn} className="bg-card/90 backdrop-blur-sm border border-border hover:border-success/50">
           <ZoomIn className="w-4 h-4" />
         </Button>
