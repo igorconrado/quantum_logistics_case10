@@ -360,6 +360,9 @@ def health_check():
 
 
 if __name__ == '__main__':
+    import os
+    port = int(os.environ.get('PORT', 5001))
+
     print("=" * 60)
     print("QUANTUM LOGISTICS SERVER")
     print("=" * 60)
@@ -374,12 +377,13 @@ if __name__ == '__main__':
         print(f"       Set ORS_API_KEY environment variable to enable")
         print(f"       Get free API key at: https://openrouteservice.org")
 
-    print(f"\nServer starting at: http://localhost:5000")
+    print(f"\nServer starting at: http://localhost:{port}")
     print("Press Ctrl+C to stop the server\n")
     print("=" * 60)
 
     app.run(
         host='0.0.0.0',
-        port=5000,
-        debug=True
+        port=port,
+        debug=True,
+        threaded=True
     )
